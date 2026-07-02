@@ -3,8 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>AI Agent Developer</title>
-<meta name="description" content="AI Agent 方向开发工程师，专注 Agent 框架与多模态内容生成。">
+<title>flame34</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
@@ -19,432 +18,227 @@
   --accent: #7c5cfc;
   --accent-glow: rgba(124, 92, 252, 0.15);
   --accent2: #00d9a3;
-  --radius: 12px;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+html, body {
+  height: 100%;
+  overflow: hidden;
+}
 
 body {
   background: var(--bg);
   color: var(--text);
   font-family: 'Inter', -apple-system, sans-serif;
-  line-height: 1.6;
   -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
-}
-
-/* ===== Nav ===== */
-nav {
-  position: fixed;
-  top: 0;
-  width: 100%;
-  padding: 16px 5%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
-  z-index: 100;
-  backdrop-filter: blur(20px);
-  background: rgba(10, 10, 15, 0.7);
-  border-bottom: 1px solid transparent;
-  transition: border-color 0.3s;
-}
-nav.scrolled { border-bottom-color: var(--border); }
-
-.logo {
-  font-weight: 600;
-  font-size: 16px;
-  letter-spacing: -0.02em;
-}
-.logo span { color: var(--accent); }
-
-nav ul {
-  display: flex;
-  list-style: none;
-  gap: 32px;
-}
-nav a {
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 14px;
-  transition: color 0.2s;
-}
-nav a:hover { color: var(--text); }
-
-/* ===== Hero ===== */
-.hero {
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
   justify-content: center;
-  align-items: center;
-  text-align: center;
-  padding: 0 5%;
   position: relative;
 }
 
-.hero::before {
+/* Background glow */
+body::before {
   content: '';
-  position: absolute;
-  top: 30%;
+  position: fixed;
+  top: 50%;
   left: 50%;
-  transform: translateX(-50%);
-  width: 600px;
-  height: 600px;
+  transform: translate(-50%, -50%);
+  width: 700px;
+  height: 700px;
   background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
   pointer-events: none;
 }
 
-.hero h1 {
-  font-size: clamp(2.5rem, 7vw, 5rem);
+.container {
+  width: 100%;
+  max-width: 640px;
+  padding: 40px;
+  text-align: center;
+  position: relative;
+  z-index: 1;
+}
+
+/* Name */
+h1 {
+  font-size: clamp(2rem, 6vw, 3rem);
   font-weight: 700;
   letter-spacing: -0.03em;
-  margin-bottom: 16px;
-  animation: fadeUp 0.8s ease 0.1s both;
+  margin-bottom: 8px;
 }
-.hero h1 .grad {
+h1 .grad {
   background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
 }
 
-.hero p {
-  font-size: clamp(1rem, 2vw, 1.25rem);
+/* Tagline */
+.tagline {
+  font-size: 15px;
   color: var(--text-dim);
-  max-width: 540px;
-  margin-bottom: 36px;
-  animation: fadeUp 0.8s ease 0.2s both;
+  margin-bottom: 28px;
 }
 
-.hero-links {
+/* Skills */
+.skills {
   display: flex;
-  gap: 16px;
-  animation: fadeUp 0.8s ease 0.3s both;
-}
-.btn {
-  display: inline-flex;
-  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
   gap: 8px;
-  padding: 12px 28px;
-  border-radius: var(--radius);
-  font-size: 14px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: all 0.2s;
-  border: 1px solid transparent;
+  margin-bottom: 28px;
 }
-.btn-primary {
-  background: var(--accent);
-  color: #fff;
-}
-.btn-primary:hover {
-  background: #6b4df0;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px var(--accent-glow);
-}
-.btn-ghost {
-  background: transparent;
-  color: var(--text-dim);
-  border-color: var(--border);
-}
-.btn-ghost:hover {
-  color: var(--text);
-  border-color: var(--text-mute);
+.skill {
+  padding: 5px 12px;
   background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 12px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+}
+.skill:hover {
+  color: var(--accent);
+  border-color: var(--accent);
 }
 
-/* ===== Sections ===== */
-section {
-  padding: 100px 5%;
-  max-width: 900px;
-  margin: 0 auto;
+/* Blog links */
+.blog-section {
+  margin-bottom: 28px;
 }
-
-.section-label {
-  font-size: 13px;
+.blog-label {
+  font-size: 12px;
   color: var(--accent);
   font-family: 'JetBrains Mono', monospace;
   margin-bottom: 12px;
 }
-.section-title {
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  font-weight: 600;
-  letter-spacing: -0.02em;
-  margin-bottom: 48px;
-}
-
-/* ===== Skills ===== */
-.skills-wrap {
+.blog-list {
   display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
+  flex-direction: column;
+  gap: 8px;
 }
-.skill-tag {
-  padding: 8px 16px;
+.blog-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
   background: var(--bg-card);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 10px;
+  text-decoration: none;
+  color: var(--text);
   font-size: 14px;
-  color: var(--text-dim);
-  transition: all 0.2s;
-  cursor: default;
-}
-.skill-tag:hover {
-  color: var(--accent);
-  border-color: var(--accent);
-  background: var(--accent-glow);
-}
-
-/* ===== Projects ===== */
-.project {
-  background: var(--bg-card);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 28px;
-  margin-bottom: 16px;
   transition: all 0.2s;
 }
-.project:hover {
+.blog-item:hover {
   background: var(--bg-hover);
   border-color: var(--text-mute);
-  transform: translateY(-2px);
+  transform: translateX(4px);
 }
-.project-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: start;
-  margin-bottom: 8px;
+.blog-item .title {
+  font-weight: 500;
 }
-.project h3 {
-  font-size: 17px;
-  font-weight: 600;
-}
-.project .arrow {
-  color: var(--text-mute);
-  transition: all 0.2s;
-}
-.project:hover .arrow {
-  color: var(--accent);
-  transform: translate(3px, -3px);
-}
-.project .stack {
-  display: flex;
-  gap: 6px;
-  margin: 12px 0;
-}
-.project .stack span {
+.blog-item .meta {
   font-size: 12px;
+  color: var(--text-mute);
   font-family: 'JetBrains Mono', monospace;
-  color: var(--text-mute);
-  padding: 3px 8px;
-  background: var(--bg);
-  border-radius: 4px;
-}
-.project p {
-  font-size: 14px;
-  color: var(--text-dim);
+  white-space: nowrap;
+  margin-left: 12px;
 }
 
-.projects-empty {
-  text-align: center;
-  padding: 60px 20px;
-  color: var(--text-mute);
-  font-size: 15px;
-  background: var(--bg-card);
-  border: 1px dashed var(--border);
-  border-radius: var(--radius);
-}
-
-/* ===== Contact ===== */
-.contact {
-  text-align: center;
-  padding: 120px 5%;
-}
-.contact h2 {
-  font-size: clamp(1.5rem, 4vw, 2.25rem);
-  font-weight: 600;
-  margin-bottom: 16px;
-}
-.contact p {
-  color: var(--text-dim);
-  margin-bottom: 32px;
-}
-.contact-links {
+/* Social */
+.links {
   display: flex;
   justify-content: center;
   gap: 16px;
-  flex-wrap: wrap;
 }
-
-/* ===== Footer ===== */
-footer {
-  border-top: 1px solid var(--border);
-  padding: 32px 5%;
-  text-align: center;
-  color: var(--text-mute);
+.link-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 20px;
+  border-radius: 8px;
   font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1px solid var(--border);
+  background: var(--bg-card);
+  color: var(--text-dim);
+}
+.link-btn:hover {
+  color: var(--text);
+  border-color: var(--text-mute);
+  background: var(--bg-hover);
 }
 
-/* ===== Animations ===== */
+/* Animations */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(20px); }
+  from { opacity: 0; transform: translateY(15px); }
   to { opacity: 1; transform: translateY(0); }
 }
-
-.reveal {
-  opacity: 0;
-  transform: translateY(30px);
-  transition: opacity 0.6s ease, transform 0.6s ease;
+.container > * {
+  animation: fadeUp 0.5s ease both;
 }
-.reveal.visible {
-  opacity: 1;
-  transform: translateY(0);
-}
+.container > *:nth-child(2) { animation-delay: 0.05s; }
+.container > *:nth-child(3) { animation-delay: 0.1s; }
+.container > *:nth-child(4) { animation-delay: 0.15s; }
+.container > *:nth-child(5) { animation-delay: 0.2s; }
 
-/* ===== Responsive ===== */
 @media (max-width: 640px) {
-  nav ul { display: none; }
-  .hero-links { flex-direction: column; align-items: center; }
+  .container { padding: 24px; }
+  .blog-item { flex-direction: column; align-items: flex-start; gap: 4px; }
+  .blog-item .meta { margin-left: 0; }
 }
 </style>
 </head>
 <body>
 
-<nav id="nav">
-  <div class="logo">flame<span>.</span></div>
-  <ul>
-    <li><a href="#skills">技能</a></li>
-    <li><a href="#blog">博客</a></li>
-    <li><a href="#contact">联系</a></li>
-  </ul>
-</nav>
-
-<!-- Hero -->
-<section class="hero">
+<div class="container">
   <h1>flame<span class="grad">34</span></h1>
-  <p>AI Agent 方向开发工程师 · 专注 Agent 框架、多模态内容生成与 LLM 应用落地</p>
-  <div class="hero-links">
-    <a href="#blog" class="btn btn-primary">阅读博客 →</a>
-    <a href="https://github.com/flame-34" target="_blank" class="btn btn-ghost">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-      GitHub
-    </a>
+  <p class="tagline">AI Agent Developer · 专注 Agent 框架与多模态内容生成</p>
+
+  <div class="skills">
+    <span class="skill">Python</span>
+    <span class="skill">TypeScript</span>
+    <span class="skill">Go</span>
+    <span class="skill">LangChain</span>
+    <span class="skill">FastAPI</span>
+    <span class="skill">MCP</span>
+    <span class="skill">RAG</span>
+    <span class="skill">Docker</span>
   </div>
-</section>
 
-<!-- Skills -->
-<section id="skills">
-  <div class="section-label reveal">// 技术栈</div>
-  <h2 class="section-title reveal">技能</h2>
-  <div class="skills-wrap reveal">
-    <div class="skill-tag">Python</div>
-    <div class="skill-tag">TypeScript</div>
-    <div class="skill-tag">Go</div>
-    <div class="skill-tag">C/C++</div>
-    <div class="skill-tag">LangChain / LlamaIndex</div>
-    <div class="skill-tag">FastAPI</div>
-    <div class="skill-tag">Pydantic</div>
-    <div class="skill-tag">OpenAI API / GLM API</div>
-    <div class="skill-tag">MCP Protocol</div>
-    <div class="skill-tag">RAG / Vector DB</div>
-    <div class="skill-tag">Docker</div>
-    <div class="skill-tag">Linux / Shell</div>
-    <div class="skill-tag">Git</div>
-    <div class="skill-tag">嵌入式 Linux BSP</div>
-    <div class="skill-tag">FreeRTOS</div>
-  </div>
-</section>
-
-<!-- Blog -->
-<section id="blog">
-  <div class="section-label reveal">// 博客</div>
-  <h2 class="section-title reveal">Blog</h2>
-
-  <a href="/blog/agent-architecture.html" class="reveal" style="text-decoration:none;color:inherit;display:block;">
-    <div class="project">
-      <div class="project-header">
-        <h3>从零理解 AI Agent 架构</h3>
-        <span class="arrow">↗</span>
-      </div>
-      <p>Agent 系统的五大核心组件：Orchestrator、Reasoner、Tool Registry、Memory、State Manager。用 Spring Boot 类比理解 Agent 架构。</p>
-      <div class="stack"><span>8 min</span><span>Agent</span><span>架构</span></div>
-    </div>
-  </a>
-
-  <a href="/blog/handwrite-react-agent.html" class="reveal" style="text-decoration:none;color:inherit;display:block;">
-    <div class="project">
-      <div class="project-header">
-        <h3>用 Python 手写一个 ReAct Agent（200 行）</h3>
-        <span class="arrow">↗</span>
-      </div>
-      <p>不依赖任何框架，从零实现完整的 ReAct 循环：工具注册、LLM 决策、多轮对话。理解这段代码就看懂了所有 Agent 框架。</p>
-      <div class="stack"><span>12 min</span><span>Python</span><span>ReAct</span></div>
-    </div>
-  </a>
-
-  <a href="/blog/mcp-protocol.html" class="reveal" style="text-decoration:none;color:inherit;display:block;">
-    <div class="project">
-      <div class="project-header">
-        <h3>MCP 协议详解：Agent 的 USB 标准</h3>
-        <span class="arrow">↗</span>
-      </div>
-      <p>MCP 解决了 Agent 生态的 N×M 适配问题。从 JSON-RPC 消息格式到手写 MCP Server，面试必考题。</p>
-      <div class="stack"><span>10 min</span><span>MCP</span><span>协议</span></div>
-    </div>
-  </a>
-
-  <a href="/blog/embedded-to-agent.html" class="reveal" style="text-decoration:none;color:inherit;display:block;">
-    <div class="project">
-      <div class="project-header">
-        <h3>从嵌入式到 AI Agent：一个转行者的笔记</h3>
-        <span class="arrow">↗</span>
-      </div>
-      <p>7 周学习路线、可迁移技能清单、最大的思维坑、面试核心考点。给同样想转行的人参考。</p>
-      <div class="stack"><span>6 min</span><span>转行</span><span>经验</span></div>
-    </div>
-  </a>
-</section>
-
-<!-- Contact -->
-<section id="contact" class="contact">
-  <div class="reveal">
-    <div class="section-label">// 联系方式</div>
-    <h2>Get in Touch</h2>
-    <p>技术交流 · 项目合作 · 随便聊聊</p>
-    <div class="contact-links">
-      <a href="https://github.com/flame-34" target="_blank" class="btn btn-ghost">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-        GitHub
+  <div class="blog-section">
+    <div class="blog-label">// blog</div>
+    <div class="blog-list">
+      <a href="/blog/agent-architecture.html" class="blog-item">
+        <span class="title">从零理解 AI Agent 架构</span>
+        <span class="meta">8 min</span>
+      </a>
+      <a href="/blog/handwrite-react-agent.html" class="blog-item">
+        <span class="title">用 Python 手写 ReAct Agent（200 行）</span>
+        <span class="meta">12 min</span>
+      </a>
+      <a href="/blog/mcp-protocol.html" class="blog-item">
+        <span class="title">MCP 协议详解</span>
+        <span class="meta">10 min</span>
+      </a>
+      <a href="/blog/embedded-to-agent.html" class="blog-item">
+        <span class="title">从嵌入式到 AI Agent</span>
+        <span class="meta">6 min</span>
       </a>
     </div>
   </div>
-</section>
 
-<footer>
-  © 2026 flame-34
-</footer>
-
-<script>
-// Nav scroll effect
-const nav = document.getElementById('nav');
-window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 20);
-});
-
-// Scroll reveal
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) e.target.classList.add('visible');
-  });
-}, { threshold: 0.1 });
-
-document.querySelectorAll('.reveal').forEach((el, i) => {
-  el.style.transitionDelay = (i % 4 * 0.08) + 's';
-  observer.observe(el);
-});
-</script>
+  <div class="links">
+    <a href="https://github.com/flame-34" target="_blank" class="link-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
+    </a>
+  </div>
+</div>
 
 </body>
 </html>
