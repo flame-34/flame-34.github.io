@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>从零理解 AI Agent 架构 — flame34</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bg:#0a0a0f;--bg-card:#12121a;--border:#1e1e2e;--text:#e4e4ef;--text-dim:#6b6b80;--text-mute:#45455a;--accent:#7c5cfc;--accent2:#00d9a3}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+nav{position:fixed;top:0;width:100%;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,0.7);border-bottom:1px solid transparent}
+nav a{color:var(--text-dim);font-size:14px;margin-right:24px;transition:color .2s}
+nav a:hover{color:var(--text)}
+.logo{font-weight:600;font-size:16px}
+.logo span{color:var(--accent)}
+article{max-width:720px;margin:0 auto;padding:120px 5% 60px}
+.back{display:inline-block;margin-bottom:32px;font-size:14px;color:var(--text-dim);transition:color .2s}
+.back:hover{color:var(--accent)}
+h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:12px}
+.meta{font-size:13px;color:var(--text-mute);font-family:'JetBrains Mono',monospace;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+h2{font-size:1.3rem;font-weight:600;margin:48px 0 16px;color:var(--text)}
+h3{font-size:1.05rem;font-weight:600;margin:32px 0 12px;color:var(--accent2)}
+p{margin-bottom:16px;color:var(--text)}
+ul,ol{margin:0 0 16px 24px}
+li{margin-bottom:8px;color:var(--text-dim)}
+code{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-card);padding:2px 6px;border-radius:4px;color:var(--accent2)}
+pre{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+pre code{background:none;padding:0;color:var(--text);font-size:13px}
+blockquote{border-left:3px solid var(--accent);padding-left:20px;margin:24px 0;color:var(--text-dim);font-style:italic}
+footer{border-top:1px solid var(--border);padding:32px 5%;text-align:center;color:var(--text-mute);font-size:13px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">flame<span>.</span></div>
+  <div><a href="/index.html#blog">← Back</a></div>
+</nav>
+<article>
+  <a href="/index.html#blog" class="back">← 所有文章</a>
+  <h1>从零理解 AI Agent 架构</h1>
+  <div class="meta">2026-07-02 · 8 min read</div>
+
+  <p>Agent 这个词在 2025-2026 年被用得太多了，几乎每个 LLM 应用都自称 "Agent"。但真正理解 Agent 架构需要搞清楚几个核心组件。这篇文章是我从嵌入式转 AI Agent 方向过程中的学习总结。</p>
+
+  <h2>Agent 不是什么</h2>
+  <p>先排除最大的误解：</p>
+  <ul>
+    <li>Agent ≠ Chatbot（被动回答 → 主动决策）</li>
+    <li>Agent ≠ Workflow（固定流程 → 动态规划）</li>
+    <li>Agent ≠ 单纯的 LLM 调用（API 包装 → 自主循环）</li>
+  </ul>
+
+  <h2>核心组件</h2>
+  <p>一个真正的 Agent 系统包含五个关键模块：</p>
+
+  <h3>1. Orchestrator（调度器）</h3>
+  <p>Agent 的"大脑前额叶"。负责接收用户意图，决定下一步做什么：是调用工具、搜索记忆、还是直接回复。它维护着整个对话的 state machine。</p>
+  <pre><code>class Orchestrator:
+    def __init__(self, reasoner, tools, memory):
+        self.reasoner = reasoner
+        self.tools = tools
+        self.memory = memory
+        self.state = AgentState.IDLE
+
+    async def run(self, user_input):
+        context = await self.memory.recall(user_input)
+        while self.state != AgentState.DONE:
+            action = await self.reasoner.decide(user_input, context)
+            if action.type == "tool_call":
+                result = await self.tools.execute(action)
+                context += result
+            elif action.type == "respond":
+                return action.payload</code></pre>
+
+  <h3>2. Reasoner（推理器）</h3>
+  <p>基于 LLM 的决策引擎。最经典的是 <strong>ReAct 循环</strong>（Reasoning + Acting）：先想，再做，再观察结果，循环往复。</p>
+  <p>ReAct 的核心 insight 是：<em>让模型把思考过程显式输出</em>，而不是黑盒式地直接给答案。这样每一步都可追踪、可干预。</p>
+
+  <h3>3. Tool Registry（工具注册表）</h3>
+  <p>Agent 能调用的一切外部能力的注册中心。每个工具声明自己的 schema（输入/输出格式），Agent 通过 LLM 的 function calling 来调度。</p>
+  <pre><code>@register_tool(name="search_web", desc="搜索互联网")
+async def search_web(query: str, max_results: int = 5):
+    """搜索互联网获取最新信息"""
+    results = await search_api(query, max_results)
+    return {"results": results}</code></pre>
+  <p>这里的关键是 <strong>声明式注册</strong>——工具自己描述自己，LLM 根据描述决定何时调用。和传统的 RPC/微服务架构思路完全不同。</p>
+
+  <h3>4. Memory（记忆系统）</h3>
+  <p>分为三层，和人类认知模型类似：</p>
+  <ul>
+    <li><strong>工作记忆</strong>：当前对话上下文（context window）</li>
+    <li><strong>短期记忆</strong>：本次会话的关键信息摘要</li>
+    <li><strong>长期记忆</strong>：向量化存储的历史对话和知识</li>
+  </ul>
+
+  <blockquote>Memory 是 Agent 跨会话连贯性的关键。没有 Memory 的 Agent 就像金鱼，每次对话从零开始。</blockquote>
+
+  <h3>5. State Manager（状态管理）</h3>
+  <p>维护 Agent 的生命周期。哪些工具被调用了、当前进度到哪、是否需要人类确认。类似操作系统的进程控制块。</p>
+
+  <h2>和 Spring Boot 的类比</h2>
+  <p>如果你有后端开发经验，可以这样理解：</p>
+  <ul>
+    <li><strong>Orchestrator</strong> ≈ DispatcherServlet（中央调度）</li>
+    <li><strong>Reasoner</strong> ≈ Service 层业务逻辑（决策核心）</li>
+    <li><strong>Tool Registry</strong> ≈ Spring Bean 容器 + AOP（声明式注册和代理调用）</li>
+    <li><strong>Memory</strong> ≈ 数据库 + Redis 缓存（分层存储）</li>
+    <li><strong>MCP Protocol</strong> ≈ RESTful API 标准（工具间通信协议）</li>
+  </ul>
+
+  <h2>当前主流框架对比</h2>
+  <ul>
+    <li><strong>LangGraph</strong>：图结构编排，适合复杂多步流程，但学习曲线陡</li>
+    <li><strong>CrewAI</strong>：多 Agent 协作，角色分工明确，但灵活性受限</li>
+    <li><strong>OpenAI Agents SDK</strong>：官方出品，简洁但生态封闭</li>
+    <li><strong>AutoGen</strong>：微软出品，对话式多 Agent，代码执行能力强</li>
+  </ul>
+
+  <p>选型建议：先从单 Agent + 几个工具开始，用 LangGraph 编排复杂流程。不要一开始就上多 Agent，协调成本远超收益。</p>
+
+  <h2>总结</h2>
+  <p>Agent 架构的本质是 <strong>让 LLM 从"被动回答"变成"主动决策"</strong>。理解了 Orchestrator-Reasoner-Tool-Memory 这四层，大部分 Agent 框架的设计都能快速看懂。</p>
+  <p>下一步建议：动手写一个最简 Agent（< 200 行 Python），不要依赖框架，自己实现 ReAct 循环和工具注册。这是理解一切 Agent 框架的基础。</p>
+</article>
+<footer>© 2026 flame-34</footer>
+</body>
+</html>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MCP 协议详解 — flame34</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bg:#0a0a0f;--bg-card:#12121a;--border:#1e1e2e;--text:#e4e4ef;--text-dim:#6b6b80;--text-mute:#45455a;--accent:#7c5cfc;--accent2:#00d9a3}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+nav{position:fixed;top:0;width:100%;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,0.7)}
+nav a{color:var(--text-dim);font-size:14px;margin-right:24px;transition:color .2s}
+nav a:hover{color:var(--text)}
+.logo{font-weight:600;font-size:16px}
+.logo span{color:var(--accent)}
+article{max-width:720px;margin:0 auto;padding:120px 5% 60px}
+.back{display:inline-block;margin-bottom:32px;font-size:14px;color:var(--text-dim);transition:color .2s}
+.back:hover{color:var(--accent)}
+h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:12px}
+.meta{font-size:13px;color:var(--text-mute);font-family:'JetBrains Mono',monospace;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+h2{font-size:1.3rem;font-weight:600;margin:48px 0 16px;color:var(--text)}
+h3{font-size:1.05rem;font-weight:600;margin:32px 0 12px;color:var(--accent2)}
+p{margin-bottom:16px;color:var(--text)}
+ul,ol{margin:0 0 16px 24px}
+li{margin-bottom:8px;color:var(--text-dim)}
+code{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-card);padding:2px 6px;border-radius:4px;color:var(--accent2)}
+pre{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+pre code{background:none;padding:0;color:var(--text);font-size:13px}
+blockquote{border-left:3px solid var(--accent);padding-left:20px;margin:24px 0;color:var(--text-dim);font-style:italic}
+table{width:100%;border-collapse:collapse;margin:16px 0}
+th,td{padding:10px 14px;border:1px solid var(--border);text-align:left;font-size:14px}
+th{color:var(--accent);font-weight:600}
+td{color:var(--text-dim)}
+footer{border-top:1px solid var(--border);padding:32px 5%;text-align:center;color:var(--text-mute);font-size:13px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">flame<span>.</span></div>
+  <div><a href="/index.html#blog">← Back</a></div>
+</nav>
+<article>
+  <a href="/index.html#blog" class="back">← 所有文章</a>
+  <h1>MCP 协议详解：Agent 的 USB 标准</h1>
+  <div class="meta">2026-07-02 · 10 min read</div>
+
+  <p>2024 年底 Anthropic 发布了 MCP（Model Context Protocol），2025-2026 年迅速成为 Agent 生态的事实标准。如果你不理解 MCP，面试 Agent 岗位会被秒挂。这篇文章讲透它。</p>
+
+  <h2>一句话理解 MCP</h2>
+  <blockquote>MCP 就是 AI Agent 世界的 USB 接口标准。在此之前，每个工具和每个 Agent 之间都需要单独适配，N×M 问题。MCP 之后，工具和 Agent 各自实现一次 MCP 接口，N+M。</blockquote>
+
+  <h2>为什么需要 MCP</h2>
+  <p>在 MCP 出现之前，给 LLM 接工具是这样的：</p>
+  <ul>
+    <li>OpenAI 有 <code>function calling</code> 格式</li>
+    <li>Anthropic 有 <code>tool_use</code> 格式</li>
+    <li>各种 Agent 框架（LangChain、AutoGen）各有各的工具定义方式</li>
+    <li>你想把一个搜索工具接到 3 个不同框架上，要写 3 遍适配代码</li>
+  </ul>
+  <p>这就是经典的 <strong>N×M 问题</strong>。MCP 的目标是标准化这层接口。</p>
+
+  <h2>MCP 的架构</h2>
+  <p>MCP 是 client-server 架构：</p>
+
+  <table>
+    <tr><th>角色</th><th>谁</th><th>职责</th></tr>
+    <tr><td>MCP Host</td><td>Cursor / Claude Desktop / 你的 Agent</td><td>面向用户的应用</td></tr>
+    <tr><td>MCP Client</td><td>Host 内部的协议层</td><td>和 Server 通信</td></tr>
+    <tr><td>MCP Server</td><td>工具提供方（文件系统、数据库、API）</td><td>暴露能力</td></tr>
+  </table>
+
+  <h3>通信方式</h3>
+  <ul>
+    <li><strong>stdio</strong>：本地子进程，标准输入输出通信（最常见）</li>
+    <li><strong>SSE (Server-Sent Events)</strong>：远程 HTTP 长连接</li>
+  </ul>
+
+  <h2>MCP Server 能暴露什么</h2>
+  <p>三种能力：</p>
+
+  <h3>1. Tools（工具）</h3>
+  <p>最常用。让 Agent 能"做"事情。比如：搜索、发邮件、查数据库、执行代码。</p>
+  <pre><code>{
+  "name": "search_db",
+  "description": "在用户数据库中搜索记录",
+  "inputSchema": {
+    "type": "object",
+    "properties": {
+      "query": {"type": "string", "description": "搜索关键词"},
+      "limit": {"type": "number", "default": 10}
+    },
+    "required": ["query"]
+  }
+}</code></pre>
+
+  <h3>2. Resources（资源）</h3>
+  <p>让 Agent 能"读"数据。类似 REST API 的 GET。比如：读取文件内容、获取配置、查看日志。</p>
+  <pre><code>// 资源用 URI 标识
+"resources": [
+  {"uri": "file:///project/src/main.py", "name": "主入口文件"},
+  {"uri": "config://app/settings.json", "name": "应用配置"}
+]</code></pre>
+
+  <h3>3. Prompts（提示模板）</h3>
+  <p>预定义的提示词模板。Server 可以提供一些高质量的 prompt 模板供 Host 使用。</p>
+
+  <h2>消息格式：JSON-RPC 2.0</h2>
+  <p>MCP 底层用 JSON-RPC 2.0 通信。一个典型的工具调用流程：</p>
+
+  <pre><code>// 1. Client → Server: 初始化握手
+{"jsonrpc": "2.0", "method": "initialize", "id": 1,
+ "params": {"capabilities": {}, "protocolVersion": "2024-11-05"}}
+
+// 2. Server → Client: 返回能力声明
+{"jsonrpc": "2.0", "result": {
+  "capabilities": {"tools": {}, "resources": {}},
+  "protocolVersion": "2024-11-05"
+}, "id": 1}
+
+// 3. Client → Server: 请求工具列表
+{"jsonrpc": "2.0", "method": "tools/list", "id": 2}
+
+// 4. Server → Client: 返回所有工具
+{"jsonrpc": "2.0", "result": {"tools": [...]}, "id": 2}
+
+// 5. Client → Server: 调用工具
+{"jsonrpc": "2.0", "method": "tools/call", "id": 3,
+ "params": {"name": "search_db", "arguments": {"query": "users"}}}
+
+// 6. Server → Client: 返回结果
+{"jsonrpc": "2.0", "result": {
+  "content": [{"type": "text", "text": "Found 42 users..."}]
+}, "id": 3}</code></pre>
+
+  <h2>手写一个 MCP Server（Python）</h2>
+  <pre><code>from mcp.server import Server
+from mcp.types import Tool, TextContent
+import mcp.server.stdio
+import asyncio
+
+server = Server("my-tools")
+
+@server.list_tools()
+async def list_tools():
+    return [Tool(
+        name="get_weather",
+        description="获取指定城市天气",
+        inputSchema={
+            "type": "object",
+            "properties": {
+                "city": {"type": "string", "description": "城市名"}
+            },
+            "required": ["city"]
+        }
+    )]
+
+@server.call_tool()
+async def call_tool(name: str, arguments: dict):
+    if name == "get_weather":
+        city = arguments["city"]
+        # 你的业务逻辑
+        weather = f"{city}今天晴，25°C"
+        return [TextContent(type="text", text=weather)]
+
+async def main():
+    async with mcp.server.stdio.stdio_server() as (r, w):
+        await server.run(r, w, server.create_initialization_options())
+
+asyncio.run(main())</code></pre>
+
+  <p>把这个 Server 跑起来，任何支持 MCP 的 Host（Claude Desktop、Cursor、你的 Agent）都能直接调用 <code>get_weather</code> 工具，零适配成本。</p>
+
+  <h2>MCP vs Function Calling</h2>
+  <p>面试高频题。两者不是替代关系：</p>
+  <table>
+    <tr><th>维度</th><th>Function Calling</th><th>MCP</th></tr>
+    <tr><td>层级</td><td>LLM API 层（OpenAI/Anthropic 定义）</td><td>应用协议层（跨 LLM）</td></tr>
+    <tr><td>作用</td><td>让 LLM 输出结构化调用意图</td><td>标准化 Agent ↔ Tool 通信</td></tr>
+    <tr><td>范围</td><td>单次 LLM 调用</td><td>整个工具生态</td></tr>
+    <tr><td>关系</td><td colspan="2">MCP Server 内部可以用 Function Calling 和 LLM 对话</td></tr>
+  </table>
+
+  <h2>当前生态（2026 年中）</h2>
+  <ul>
+    <li><strong>Anthropic</strong>：Claude Desktop 原生支持，生态最完善</li>
+    <li><strong>OpenAI</strong>：ChatGPT/Codex 已支持 MCP Server 接入</li>
+    <li><strong>开源</strong>：已有 200+ 开源 MCP Server（文件系统、GitHub、数据库、浏览器...）</li>
+    <li><strong>趋势</strong>：从 "plugin for X" 走向 "MCP server for anything"</li>
+  </ul>
+
+  <h2>总结</h2>
+  <p>MCP 解决的是 Agent 生态的 <strong>标准化问题</strong>。可以类比：</p>
+  <ul>
+    <li>HTTP 标准化了文档传输</li>
+    <li>RESTful 标准化了 API 设计</li>
+    <li>SQL 标准化了数据库查询</li>
+    <li><strong>MCP 标准化了 Agent ↔ Tool 通信</strong></li>
+  </ul>
+  <p>如果你在准备 Agent 方向面试，MCP 是必考题。理解到 JSON-RPC 消息级别就够了。</p>
+</article>
+<footer>© 2026 flame-34</footer>
+</body>
+</html>

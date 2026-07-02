@@ -316,7 +316,7 @@ footer {
   <div class="logo">flame<span>.</span></div>
   <ul>
     <li><a href="#skills">技能</a></li>
-    <li><a href="#projects">项目</a></li>
+    <li><a href="#blog">博客</a></li>
     <li><a href="#contact">联系</a></li>
   </ul>
 </nav>
@@ -326,7 +326,7 @@ footer {
   <h1>flame<span class="grad">34</span></h1>
   <p>AI Agent 方向开发工程师 · 专注 Agent 框架、多模态内容生成与 LLM 应用落地</p>
   <div class="hero-links">
-    <a href="#projects" class="btn btn-primary">查看项目 →</a>
+    <a href="#blog" class="btn btn-primary">阅读博客 →</a>
     <a href="https://github.com/flame-34" target="_blank" class="btn btn-ghost">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
       GitHub
@@ -357,13 +357,54 @@ footer {
   </div>
 </section>
 
-<!-- Projects -->
-<section id="projects">
-  <div class="section-label reveal">// 精选项目</div>
-  <h2 class="section-title reveal">Projects</h2>
-  <div class="projects-empty reveal">
-    🚧 Coming Soon
-  </div>
+<!-- Blog -->
+<section id="blog">
+  <div class="section-label reveal">// 博客</div>
+  <h2 class="section-title reveal">Blog</h2>
+
+  <a href="/blog/agent-architecture.html" class="reveal" style="text-decoration:none;color:inherit;display:block;">
+    <div class="project">
+      <div class="project-header">
+        <h3>从零理解 AI Agent 架构</h3>
+        <span class="arrow">↗</span>
+      </div>
+      <p>Agent 系统的五大核心组件：Orchestrator、Reasoner、Tool Registry、Memory、State Manager。用 Spring Boot 类比理解 Agent 架构。</p>
+      <div class="stack"><span>8 min</span><span>Agent</span><span>架构</span></div>
+    </div>
+  </a>
+
+  <a href="/blog/handwrite-react-agent.html" class="reveal" style="text-decoration:none;color:inherit;display:block;">
+    <div class="project">
+      <div class="project-header">
+        <h3>用 Python 手写一个 ReAct Agent（200 行）</h3>
+        <span class="arrow">↗</span>
+      </div>
+      <p>不依赖任何框架，从零实现完整的 ReAct 循环：工具注册、LLM 决策、多轮对话。理解这段代码就看懂了所有 Agent 框架。</p>
+      <div class="stack"><span>12 min</span><span>Python</span><span>ReAct</span></div>
+    </div>
+  </a>
+
+  <a href="/blog/mcp-protocol.html" class="reveal" style="text-decoration:none;color:inherit;display:block;">
+    <div class="project">
+      <div class="project-header">
+        <h3>MCP 协议详解：Agent 的 USB 标准</h3>
+        <span class="arrow">↗</span>
+      </div>
+      <p>MCP 解决了 Agent 生态的 N×M 适配问题。从 JSON-RPC 消息格式到手写 MCP Server，面试必考题。</p>
+      <div class="stack"><span>10 min</span><span>MCP</span><span>协议</span></div>
+    </div>
+  </a>
+
+  <a href="/blog/embedded-to-agent.html" class="reveal" style="text-decoration:none;color:inherit;display:block;">
+    <div class="project">
+      <div class="project-header">
+        <h3>从嵌入式到 AI Agent：一个转行者的笔记</h3>
+        <span class="arrow">↗</span>
+      </div>
+      <p>7 周学习路线、可迁移技能清单、最大的思维坑、面试核心考点。给同样想转行的人参考。</p>
+      <div class="stack"><span>6 min</span><span>转行</span><span>经验</span></div>
+    </div>
+  </a>
 </section>
 
 <!-- Contact -->

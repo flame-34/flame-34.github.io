@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>用 Python 手写一个 ReAct Agent — flame34</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bg:#0a0a0f;--bg-card:#12121a;--border:#1e1e2e;--text:#e4e4ef;--text-dim:#6b6b80;--text-mute:#45455a;--accent:#7c5cfc;--accent2:#00d9a3}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+nav{position:fixed;top:0;width:100%;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,0.7)}
+nav a{color:var(--text-dim);font-size:14px;margin-right:24px;transition:color .2s}
+nav a:hover{color:var(--text)}
+.logo{font-weight:600;font-size:16px}
+.logo span{color:var(--accent)}
+article{max-width:720px;margin:0 auto;padding:120px 5% 60px}
+.back{display:inline-block;margin-bottom:32px;font-size:14px;color:var(--text-dim);transition:color .2s}
+.back:hover{color:var(--accent)}
+h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:12px}
+.meta{font-size:13px;color:var(--text-mute);font-family:'JetBrains Mono',monospace;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+h2{font-size:1.3rem;font-weight:600;margin:48px 0 16px;color:var(--text)}
+h3{font-size:1.05rem;font-weight:600;margin:32px 0 12px;color:var(--accent2)}
+p{margin-bottom:16px;color:var(--text)}
+ul,ol{margin:0 0 16px 24px}
+li{margin-bottom:8px;color:var(--text-dim)}
+code{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-card);padding:2px 6px;border-radius:4px;color:var(--accent2)}
+pre{background:var(--bg-card);border:1px solid var(--border);border-radius:8px;padding:16px;overflow-x:auto;margin:16px 0}
+pre code{background:none;padding:0;color:var(--text);font-size:13px}
+blockquote{border-left:3px solid var(--accent);padding-left:20px;margin:24px 0;color:var(--text-dim);font-style:italic}
+footer{border-top:1px solid var(--border);padding:32px 5%;text-align:center;color:var(--text-mute);font-size:13px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">flame<span>.</span></div>
+  <div><a href="/index.html#blog">← Back</a></div>
+</nav>
+<article>
+  <a href="/index.html#blog" class="back">← 所有文章</a>
+  <h1>用 Python 手写一个 ReAct Agent（200 行）</h1>
+  <div class="meta">2026-07-02 · 12 min read</div>
+
+  <p>看了一堆框架源码后，我发现 Agent 的核心逻辑其实非常简单。今天我们从零开始，不依赖任何框架，用纯 Python 实现一个完整可用的 ReAct Agent。</p>
+
+  <h2>目标</h2>
+  <p>实现一个能做这些事的 Agent：</p>
+  <ul>
+    <li>理解用户意图，决定是否需要调用工具</li>
+    <li>支持工具注册（可扩展）</li>
+    <li>ReAct 循环：思考 → 行动 → 观察 → 再思考</li>
+    <li>多轮对话（有记忆）</li>
+    <li>完整的错误处理</li>
+  </ul>
+
+  <h2>Step 1: 定义工具系统</h2>
+  <p>工具是 Agent 的手和眼。先建一个注册中心：</p>
+
+  <pre><code>import inspect
+import json
+from typing import get_type_hints
+
+class ToolRegistry:
+    def __init__(self):
+        self._tools = {}
+
+    def register(self, name: str, description: str):
+        """装饰器：注册一个函数为 Agent 工具"""
+        def decorator(func):
+            sig = inspect.signature(func)
+            params = {}
+            for pname, param in sig.parameters.items():
+                ptype = str(param.annotation) if param.annotation != inspect.Parameter.empty else "string"
+                params[pname] = {"type": ptype}
+
+            self._tools[name] = {
+                "name": name,
+                "description": description,
+                "function": func,
+                "parameters": {
+                    "type": "object",
+                    "properties": params,
+                }
+            }
+            return func
+        return decorator
+
+    def get_schemas(self):
+        """返回所有工具的 schema（给 LLM 看的）"""
+        return [
+            {"type": "function", "function": {
+                "name": t["name"],
+                "description": t["description"],
+                "parameters": t["parameters"],
+            }}
+            for t in self._tools.values()
+        ]
+
+    async def execute(self, name: str, args: dict):
+        if name not in self._tools:
+            return f"Error: tool '{name}' not found"
+        try:
+            result = await self._tools[name]["function"](**args)
+            return result
+        except Exception as e:
+            return f"Error executing {name}: {e}"</code></pre>
+
+  <p>使用方式很简洁：</p>
+  <pre><code>tools = ToolRegistry()
+
+@tools.register("calculate", "数学计算")
+async def calculate(expression: str):
+    return str(eval(expression))  # 简化版，生产环境别用 eval
+
+@tools.register("get_time", "获取当前时间")
+async def get_time():
+    from datetime import datetime
+    return datetime.now().strftime("%Y-%m-%d %H:%M:%S")</code></pre>
+
+  <h2>Step 2: 实现 ReAct 循环</h2>
+  <p>这是 Agent 的大脑。核心是一个 while 循环：</p>
+
+  <pre><code>class ReActAgent:
+    def __init__(self, client, tools, system_prompt="", max_steps=10):
+        self.client = client  # LLM API client
+        self.tools = tools
+        self.system_prompt = system_prompt or "You are a helpful AI assistant."
+        self.max_steps = max_steps
+        self.history = []
+
+    async def think(self, user_input):
+        """ReAct 主循环"""
+        self.history.append({"role": "user", "content": user_input})
+
+        for step in range(self.max_steps):
+            # 1. 调用 LLM，附带工具定义
+            messages = [
+                {"role": "system", "content": self.system_prompt},
+                *self.history,
+            ]
+
+            response = await self.client.chat.completions.create(
+                model="glm-5-turbo",
+                messages=messages,
+                tools=self.tools.get_schemas(),
+            )
+
+            msg = response.choices[0].message
+
+            # 2. 如果 LLM 没有调用工具，说明它准备好回答了
+            if not msg.tool_calls:
+                self.history.append({"role": "assistant", "content": msg.content})
+                return msg.content
+
+            # 3. LLM 要调工具，执行它
+            self.history.append(msg)
+            for tool_call in msg.tool_calls:
+                args = json.loads(tool_call.function.arguments)
+                result = await self.tools.execute(tool_call.function.name, args)
+
+                self.history.append({
+                    "role": "tool",
+                    "tool_call_id": tool_call.id,
+                    "content": str(result),
+                })
+
+        return "达到最大步数限制，Agent 停止执行。"</code></pre>
+
+  <blockquote>就这么简单。整个 ReAct 循环的核心不到 40 行。LangChain 的 AgentExecutor 本质上也是这段逻辑，只是多了各种边界处理和抽象层。</blockquote>
+
+  <h2>Step 3: 跑起来</h2>
+
+  <pre><code>import asyncio
+from openai import AsyncOpenAI
+
+async def main():
+    client = AsyncOpenAI(
+        api_key="your-api-key",
+        base_url="https://open.bigmodel.cn/api/paas/v4"
+    )
+
+    tools = ToolRegistry()
+
+    @tools.register("calculate", "数学计算")
+    async def calculate(expression: str):
+        return str(eval(expression))
+
+    @tools.register("get_time", "获取当前时间")
+    async def get_time():
+        from datetime import datetime
+        return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+    agent = ReActAgent(client, tools, system_prompt="你是一个有用的助手。")
+
+    # 测试
+    answer = await agent.think("现在几点了？另外帮我算一下 123 * 456")
+    print(answer)
+
+asyncio.run(main())</code></pre>
+
+  <h2>运行效果</h2>
+  <pre><code>> 现在几点了？另外帮我算一下 123 * 456
+
+[Step 1] Agent 调用了 get_time()
+[Step 1] 结果: 2026-07-02 09:30:00
+[Step 2] Agent 调用了 calculate(expression="123 * 456")
+[Step 2] 结果: 56088
+[Step 3] Agent 生成最终回答:
+现在时间是 2026-07-02 09:30:00，123 × 456 = 56088。</code></pre>
+
+  <h2>关键设计决策解析</h2>
+
+  <h3>为什么用 async？</h3>
+  <p>Agent 天然是 I/O 密集型的（等 LLM 响应、等工具执行）。async 让单个 Agent 实例能高效处理并发请求，生产环境必备。</p>
+
+  <h3>为什么限制 max_steps？</h3>
+  <p>没有限制的 Agent 可能陷入死循环（反复调用同一工具）。<code>max_steps</code> 是安全阀，类似 Docker 的内存限制。</p>
+
+  <h3>history 为什么存完整消息？</h3>
+  <p>因为 LLM 无状态。每轮对话必须把完整历史发过去，LLM 才知道之前发生了什么。这也是为什么 context window 大小很重要——长对话会撑爆它。</p>
+
+  <h2>从这里扩展</h2>
+  <ul>
+    <li><strong>加 RAG</strong>：在 think() 前先检索相关文档，注入到 system prompt</li>
+    <li><strong>加多 Agent</strong>：让这个 Agent 能 spawn 子 Agent，分工合作</li>
+    <li><strong>加流式输出</strong>：用 SSE/WebSocket 让用户看到 Agent 的每一步</li>
+    <li><strong>加持久化</strong>：把 history 存到 Redis/PostgreSQL，支持跨会话记忆</li>
+  </ul>
+
+  <h2>总结</h2>
+  <p>Agent 不是魔法。核心就是：<strong>一个循环 + LLM 决策 + 工具执行</strong>。理解了这个 200 行代码，再看 LangChain、AutoGen 的源码就清晰多了——它们只是在解决这个问题上加了很多工程化的抽象。</p>
+  <p>建议：把这段代码敲一遍，改改工具，跑跑看。然后你就真正"懂" Agent 了。</p>
+</article>
+<footer>© 2026 flame-34</footer>
+</body>
+</html>

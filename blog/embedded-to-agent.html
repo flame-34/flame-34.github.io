@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>从嵌入式到 AI Agent — flame34</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+:root{--bg:#0a0a0f;--bg-card:#12121a;--border:#1e1e2e;--text:#e4e4ef;--text-dim:#6b6b80;--text-mute:#45455a;--accent:#7c5cfc;--accent2:#00d9a3}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;line-height:1.8;-webkit-font-smoothing:antialiased}
+a{color:var(--accent);text-decoration:none}
+nav{position:fixed;top:0;width:100%;padding:16px 5%;display:flex;justify-content:space-between;align-items:center;z-index:100;backdrop-filter:blur(20px);background:rgba(10,10,15,0.7)}
+nav a{color:var(--text-dim);font-size:14px;margin-right:24px;transition:color .2s}
+nav a:hover{color:var(--text)}
+.logo{font-weight:600;font-size:16px}
+.logo span{color:var(--accent)}
+article{max-width:720px;margin:0 auto;padding:120px 5% 60px}
+.back{display:inline-block;margin-bottom:32px;font-size:14px;color:var(--text-dim);transition:color .2s}
+.back:hover{color:var(--accent)}
+h1{font-size:clamp(1.5rem,4vw,2.2rem);font-weight:700;letter-spacing:-0.02em;margin-bottom:12px}
+.meta{font-size:13px;color:var(--text-mute);font-family:'JetBrains Mono',monospace;margin-bottom:48px;padding-bottom:24px;border-bottom:1px solid var(--border)}
+h2{font-size:1.3rem;font-weight:600;margin:48px 0 16px;color:var(--text)}
+p{margin-bottom:16px;color:var(--text)}
+ul,ol{margin:0 0 16px 24px}
+li{margin-bottom:8px;color:var(--text-dim)}
+code{font-family:'JetBrains Mono',monospace;font-size:13px;background:var(--bg-card);padding:2px 6px;border-radius:4px;color:var(--accent2)}
+blockquote{border-left:3px solid var(--accent);padding-left:20px;margin:24px 0;color:var(--text-dim);font-style:italic}
+footer{border-top:1px solid var(--border);padding:32px 5%;text-align:center;color:var(--text-mute);font-size:13px}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">flame<span>.</span></div>
+  <div><a href="/index.html#blog">← Back</a></div>
+</nav>
+<article>
+  <a href="/index.html#blog" class="back">← 所有文章</a>
+  <h1>从嵌入式到 AI Agent：一个转行者的笔记</h1>
+  <div class="meta">2026-07-02 · 6 min read</div>
+
+  <p>做了几年嵌入式（交换机 BSP、蓝牙协议栈），现在转到 AI Agent 方向。这篇文章记录转行过程中的真实感受和经验，给同样想转的人参考。</p>
+
+  <h2>为什么转</h2>
+  <p>不讲情怀，说真实的三个原因：</p>
+  <ul>
+    <li><strong>天花板</strong>：嵌入式岗位的薪资上限和成长空间，说实话在国内市场比较有限。做 BSP 五年和做 BSP 十年的区别不大。</li>
+    <li><strong>趋势</strong>：2025 年 Agent 招聘井喷，大厂都在建团队。供需关系决定了这是一个时间窗口。</li>
+    <li><strong>可迁移</strong>：嵌入式的系统思维（状态机、资源约束、实时性）和 Agent 开发高度可迁移。不是从零开始。</li>
+  </ul>
+
+  <h2>转行地图</h2>
+  <p>我的学习路径（按周排）：</p>
+  <ol>
+    <li><strong>Week 1-2</strong>：Python 基础。从 C 背景过来非常快，主要学装饰器、async/await、类型注解。</li>
+    <li><strong>Week 3</strong>：LLM API。OpenAI / GLM 的 chat completion、function calling、streaming。</li>
+    <li><strong>Week 4</strong>：Agent 架构。手写 ReAct 循环、工具注册、记忆系统。</li>
+    <li><strong>Week 5</strong>：RAG。向量数据库（Chroma/FAISS）、embedding、检索策略。</li>
+    <li><strong>Week 6</strong>：LangChain/LlamaIndex 框架。不是为了用，是为了读懂源码。</li>
+    <li><strong>Week 7+</strong>：MCP 协议、多 Agent 编排、LangGraph。做项目。</li>
+  </ol>
+
+  <h2>哪些技能可以直接迁移</h2>
+
+  <blockquote>如果你的嵌入式中级以上，你已经具备了 Agent 开发需要的 60% 的底层能力。</blockquote>
+
+  <ul>
+    <li><strong>状态机思维</strong>：Agent 的 Orchestrator 本质就是一个状态机。嵌入式中写了无数个。</li>
+    <li><strong>资源约束意识</strong>：嵌入式养成的"内存不是无限的"直觉，在 Agent 里就是 token 管理和 API 限速。</li>
+    <li><strong>协议解析</strong>：MCP 底层是 JSON-RPC，和嵌入式里解析二进制协议包比起来简单多了。</li>
+    <li><strong>调试能力</strong>：嵌入式调试用 JTAG/log，Agent 调试用 trace/日志。方法论一样。</li>
+    <li><strong>系统思维</strong>：从 BSP 到应用层的全栈理解，和从 LLM 到 Tool 到 UI 的全栈理解是同构的。</li>
+  </ul>
+
+  <h2>最大的坑</h2>
+  <p>转行不是技术难，是<strong>思维方式要变</strong>：</p>
+  <ul>
+    <li><strong>确定性 → 概率性</strong>：嵌入式里代码行为是 100% 确定的。Agent 里 LLM 的输出是概率性的。同样的输入可能不同输出。这需要全新的错误处理思路。</li>
+    <li><strong>性能优化方向不同</strong>：嵌入式优化 CPU/内存/功耗。Agent 优化 token 数/延迟/准确率。</li>
+    <li><strong>测试方式不同</strong>：嵌入式写单元测试覆盖边界条件。Agent 需要评估集（eval set）和回归测试。</li>
+    <li><strong>"能跑"不等于"能用"</strong>：嵌入式代码跑通了基本就行。Agent 跑通了可能输出一堆垃圾，需要 prompt 工程和评测调优。</li>
+  </ul>
+
+  <h2>面试经验</h2>
+  <p>Agent 岗位面试核心考点（按频率排）：</p>
+  <ol>
+    <li>Agent 架构设计（ReAct vs Plan-and-Execute）</li>
+    <li>RAG 系统（embedding/chunking/re-ranking）</li>
+    <li>Function Calling / Tool Use</li>
+    <li>MCP 协议</li>
+    <li>Prompt Engineering</li>
+    <li>多 Agent 协作</li>
+    <li>LangChain / LangGraph 源码级理解</li>
+  </ol>
+  <p>加分项：有开源 Agent 项目、有实际落地经验、理解 LLM 训练流程。</p>
+
+  <h2>给同样想转的人</h2>
+  <ul>
+    <li>不要花太多时间学框架 API，框架会变。学原理。</li>
+    <li>一定要动手做项目，哪怕很小的。一个 200 行的 ReAct Agent 比看完一门课价值大。</li>
+    <li>简历上不要写"熟悉 LangChain"。写"用 Python 实现了 ReAct Agent 循环，支持工具注册和记忆系统"。</li>
+    <li>嵌入式背景是你的差异化优势，不是包袱。面试时强调系统思维和底层能力。</li>
+  </ul>
+</article>
+<footer>© 2026 flame-34</footer>
+</body>
+</html>
