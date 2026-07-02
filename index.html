@@ -5,389 +5,528 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>flame34 — AI Agent Developer</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
 :root {
-  --bg: #0d1117;
-  --bg-header: #161b22;
-  --bg-body: #0d1117;
-  --border: #30363d;
-  --text: #c9d1d9;
-  --text-bright: #e6edf3;
-  --text-dim: #8b949e;
-  --text-mute: #484f58;
-  --green: #3fb950;
-  --blue: #58a6ff;
-  --purple: #bc8cff;
-  --orange: #d29922;
-  --red: #f85149;
-  --cyan: #39c5cf;
+  --navy: #0a192f;
+  --light-navy: #112240;
+  --lightest-navy: #233554;
+  --slate: #8892b0;
+  --light-slate: #a8b2d1;
+  --lightest-slate: #ccd6f6;
+  --white: #e6f1ff;
+  --green: #64ffda;
+  --green-tint: rgba(100, 255, 218, 0.1);
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-sans: 'Inter', -apple-system, sans-serif;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
-html, body {
-  height: 100%;
-  overflow: hidden;
-}
+html { scroll-behavior: smooth; }
 
 body {
-  background: var(--bg-body);
-  color: var(--text);
-  font-family: 'JetBrains Mono', 'Consolas', monospace;
-  font-size: 14px;
+  background: var(--navy);
+  color: var(--slate);
+  font-family: var(--font-sans);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+/* ===== Side Social Bar ===== */
+.side-social {
+  position: fixed;
+  right: 40px;
+  bottom: 0;
   display: flex;
   flex-direction: column;
-}
-
-/* ===== Title Bar ===== */
-.titlebar {
-  background: var(--bg-header);
-  border-bottom: 1px solid var(--border);
-  padding: 8px 16px;
-  display: flex;
   align-items: center;
-  gap: 8px;
-  flex-shrink: 0;
+  gap: 20px;
+  z-index: 10;
 }
-.dots { display: flex; gap: 6px; }
-.dot { width: 12px; height: 12px; border-radius: 50%; }
-.dot.r { background: #ff5f56; }
-.dot.y { background: #ffbd2e; }
-.dot.g { background: #27c93f; }
-.titlebar .title {
-  color: var(--text-dim);
-  font-size: 12px;
-  margin-left: 8px;
+.side-social::after {
+  content: '';
+  width: 1px;
+  height: 60px;
+  background: var(--slate);
+  opacity: 0.3;
 }
-
-/* ===== Tabs ===== */
-.tabs {
-  background: var(--bg-header);
-  display: flex;
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
+.side-social a {
+  color: var(--slate);
+  transition: all 0.2s;
 }
-.tab {
-  padding: 8px 20px;
-  font-size: 12px;
-  color: var(--text-dim);
-  border-right: 1px solid var(--border);
-  cursor: default;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-.tab.active {
-  background: var(--bg-body);
-  color: var(--text-bright);
-  border-top: 2px solid var(--orange);
-  margin-top: -1px;
-}
-
-/* ===== Terminal Body ===== */
-.terminal {
-  flex: 1;
-  padding: 24px 32px;
-  overflow-y: auto;
-  scrollbar-width: thin;
-  scrollbar-color: var(--border) transparent;
-}
-.terminal::-webkit-scrollbar { width: 6px; }
-.terminal::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-
-/* ===== Lines ===== */
-.line {
-  margin-bottom: 4px;
-  white-space: pre-wrap;
-  word-break: break-word;
-}
-.prompt-line {
-  display: flex;
-  align-items: baseline;
-  gap: 8px;
-}
-.prompt {
+.side-social a:hover {
   color: var(--green);
-  font-weight: 600;
-  white-space: nowrap;
+  transform: translateY(-4px);
 }
-.prompt .user { color: var(--green); }
-.prompt .at { color: var(--text-mute); }
-.prompt .host { color: var(--blue); }
-.prompt .path { color: var(--purple); }
-.prompt .dollar { color: var(--text-dim); }
+.side-social svg { width: 20px; height: 20px; }
 
-.cmd { color: var(--text-bright); }
-.output { color: var(--text-dim); padding-left: 0; }
-
-/* Comment */
-.comment { color: var(--text-mute); }
-
-/* ===== Profile Block ===== */
-.profile {
-  margin: 16px 0;
-  padding: 16px 20px;
-  background: #161b22;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-}
-.profile-line { margin-bottom: 6px; }
-.profile-line:last-child { margin-bottom: 0; }
-.key { color: var(--cyan); }
-.val { color: var(--text); }
-.val .str { color: var(--orange); }
-.val .num { color: var(--blue); }
-.val .bool { color: var(--purple); }
-.brace { color: var(--text-mute); }
-
-/* ===== Skills Block ===== */
-.skills-row {
+/* ===== Side Email ===== */
+.side-email {
+  position: fixed;
+  left: 40px;
+  bottom: 0;
   display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 8px 0 16px;
-}
-.skill {
-  padding: 3px 10px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  font-size: 12px;
-  color: var(--text-dim);
-  transition: all 0.15s;
-}
-.skill:hover {
-  border-color: var(--blue);
-  color: var(--blue);
-  background: rgba(88, 166, 255, 0.08);
-}
-
-/* ===== Blog Block ===== */
-.blog-header {
-  color: var(--green);
-  font-weight: 600;
-  margin: 16px 0 8px;
-}
-.blog-item {
-  display: flex;
+  flex-direction: column;
   align-items: center;
-  padding: 10px 16px;
-  margin-bottom: 4px;
-  border-left: 2px solid var(--border);
-  transition: all 0.15s;
-  text-decoration: none;
-  color: var(--text-dim);
+  gap: 20px;
+  z-index: 10;
 }
-.blog-item:hover {
-  border-left-color: var(--orange);
-  color: var(--text-bright);
-  background: rgba(210, 153, 34, 0.05);
+.side-email::after {
+  content: '';
+  width: 1px;
+  height: 60px;
+  background: var(--slate);
+  opacity: 0.3;
 }
-.blog-item .idx {
-  color: var(--text-mute);
-  width: 24px;
+.side-email a {
+  color: var(--slate);
+  font-family: var(--font-mono);
   font-size: 12px;
+  writing-mode: vertical-rl;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
 }
-.blog-item .title {
-  flex: 1;
-  font-size: 13px;
-}
-.blog-item:hover .title {
-  color: var(--orange);
-}
-.blog-item .time {
-  color: var(--text-mute);
-  font-size: 11px;
-}
+.side-email a:hover { color: var(--green); }
 
-/* ===== Links Block ===== */
-.links-row {
-  display: flex;
-  gap: 12px;
-  margin-top: 16px;
-}
-.link-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 6px 16px;
-  border: 1px solid var(--border);
-  border-radius: 6px;
-  color: var(--text-dim);
-  text-decoration: none;
-  font-size: 12px;
-  transition: all 0.15s;
-}
-.link-btn:hover {
-  border-color: var(--green);
-  color: var(--green);
-}
-.link-btn svg { width: 14px; height: 14px; }
-
-/* ===== Cursor ===== */
-.cursor {
-  display: inline-block;
-  width: 8px;
-  height: 16px;
-  background: var(--green);
-  animation: blink 1s step-end infinite;
-  vertical-align: text-bottom;
-  margin-left: 2px;
-}
-@keyframes blink {
-  0%, 50% { opacity: 1; }
-  51%, 100% { opacity: 0; }
-}
-
-/* ===== Status Bar ===== */
-.statusbar {
-  background: var(--bg-header);
-  border-top: 1px solid var(--border);
-  padding: 4px 16px;
+/* ===== Nav ===== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 20px 50px;
   display: flex;
   justify-content: space-between;
-  font-size: 11px;
-  color: var(--text-mute);
-  flex-shrink: 0;
+  align-items: center;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  background: rgba(10, 25, 47, 0.85);
+  transition: all 0.3s;
 }
-.statusbar .left { display: flex; gap: 16px; }
-.statusbar .branch { color: var(--text-dim); }
-.statusbar .right { display: flex; gap: 12px; }
+nav.scrolled {
+  box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
+}
+.nav-logo {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 18px;
+  color: var(--green);
+  text-decoration: none;
+}
+.nav-logo .num { color: var(--white); }
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 30px;
+  align-items: center;
+}
+nav ul a {
+  color: var(--lightest-slate);
+  text-decoration: none;
+  font-size: 13px;
+  font-family: var(--font-mono);
+  transition: color 0.2s;
+}
+nav ul a span {
+  color: var(--green);
+  margin-right: 4px;
+}
+nav ul a:hover { color: var(--green); }
 
-/* ===== Typing Animation ===== */
-.typing {
-  overflow: hidden;
+.resume-btn {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 10px 20px;
+  border: 1px solid var(--green);
+  border-radius: 4px;
+  color: var(--green);
+  background: transparent;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.resume-btn:hover {
+  background: var(--green-tint);
+}
+
+/* ===== Main Content ===== */
+main {
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 0 150px;
+}
+
+/* ===== Hero ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.hero .intro {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--green);
+  margin-bottom: 24px;
+}
+.hero h1 {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 700;
+  color: var(--white);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 12px;
+}
+.hero h2 {
+  font-size: clamp(1.5rem, 6vw, 3.5rem);
+  font-weight: 600;
+  color: var(--slate);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+.hero .desc {
+  max-width: 500px;
+  font-size: 17px;
+  color: var(--slate);
+  margin-bottom: 48px;
+}
+.hero-cta {
+  display: flex;
+  gap: 16px;
+}
+.btn-primary {
+  font-family: var(--font-mono);
+  font-size: 14px;
+  padding: 16px 32px;
+  border: 1px solid var(--green);
+  border-radius: 4px;
+  color: var(--green);
+  background: transparent;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+.btn-primary:hover {
+  background: var(--green-tint);
+  transform: translateY(-3px);
+}
+
+/* ===== Section ===== */
+section {
+  padding: 80px 0;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 40px;
+}
+.section-num {
+  font-family: var(--font-mono);
+  font-size: 20px;
+  color: var(--green);
+  margin-right: 12px;
+}
+.section-title {
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--white);
+}
+.section-line {
+  flex: 1;
+  height: 1px;
+  background: var(--lightest-navy);
+  margin-left: 20px;
+}
+
+/* ===== Skills Grid ===== */
+.skills-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 16px;
+}
+.skill-category {
+  background: var(--light-navy);
+  border-radius: 8px;
+  padding: 24px;
+  transition: all 0.3s;
+}
+.skill-category:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 20px 30px -15px rgba(2, 12, 27, 0.7);
+}
+.skill-category h3 {
+  font-size: 15px;
+  color: var(--light-slate);
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+.skill-category ul {
+  list-style: none;
+  font-family: var(--font-mono);
+  font-size: 13px;
+}
+.skill-category li {
+  padding: 3px 0;
+  color: var(--slate);
+}
+.skill-category li::before {
+  content: '▹ ';
+  color: var(--green);
+}
+
+/* ===== Blog ===== */
+.blog-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.blog-card {
+  background: var(--light-navy);
+  border-radius: 8px;
+  padding: 24px 28px;
+  text-decoration: none;
+  transition: all 0.3s;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-left: 3px solid transparent;
+}
+.blog-card:hover {
+  transform: translateX(8px);
+  border-left-color: var(--green);
+  background: var(--lightest-navy);
+}
+.blog-card .info h3 {
+  font-size: 18px;
+  color: var(--white);
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.blog-card:hover .info h3 { color: var(--green); }
+.blog-card .info p {
+  font-size: 14px;
+  color: var(--slate);
+}
+.blog-card .meta {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  color: var(--slate);
+  text-align: right;
   white-space: nowrap;
-  animation: type 1.5s steps(40) 0.2s both;
-}
-@keyframes type {
-  from { width: 0; }
-  to { width: 100%; }
+  padding-left: 16px;
 }
 
-/* ===== Mobile ===== */
-@media (max-width: 640px) {
-  .terminal { padding: 16px; font-size: 12px; }
-  .blog-item { flex-direction: column; align-items: flex-start; }
-  .blog-item .time { margin-top: 2px; }
-  .links-row { flex-wrap: wrap; }
+/* ===== Contact ===== */
+.contact-section {
+  text-align: center;
+  padding: 120px 0;
+}
+.contact-section h2 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  color: var(--white);
+  margin-bottom: 16px;
+  font-weight: 700;
+}
+.contact-section p {
+  max-width: 440px;
+  margin: 0 auto 40px;
+  color: var(--slate);
+}
+
+/* ===== Footer ===== */
+footer {
+  text-align: center;
+  padding: 32px;
+  color: var(--slate);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1080px {
+  main { padding: 0 100px; }
+  .side-social, .side-email { display: none; }
+}
+@media (max-width: 768px) {
+  main { padding: 0 40px; }
+  nav { padding: 16px 24px; }
+  nav ul { display: none; }
+  .skills-grid { grid-template-columns: 1fr; }
+  .blog-card { flex-direction: column; align-items: flex-start; }
+  .blog-card .meta { padding-left: 0; margin-top: 8px; }
+}
+
+/* ===== Scroll reveal ===== */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 </style>
 </head>
 <body>
 
-<!-- Title Bar -->
-<div class="titlebar">
-  <div class="dots">
-    <div class="dot r"></div>
-    <div class="dot y"></div>
-    <div class="dot g"></div>
-  </div>
-  <span class="title">flame34@github: ~/portfolio — zsh</span>
+<!-- Side Social -->
+<div class="side-social">
+  <a href="https://github.com/flame-34" target="_blank">
+    <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+  </a>
 </div>
 
-<!-- Tabs -->
-<div class="tabs">
-  <div class="tab active">📄 index.ts</div>
-  <div class="tab">📚 blog</div>
-  <div class="tab">🔧 skills</div>
-</div>
+<!-- Nav -->
+<nav id="nav">
+  <a href="#" class="nav-logo">flame<span class="num">34</span></a>
+  <ul>
+    <li><a href="#skills"><span>01.</span>技能</a></li>
+    <li><a href="#blog"><span>02.</span>博客</a></li>
+    <li><a href="#contact"><span>03.</span>联系</a></li>
+  </ul>
+  <a href="https://github.com/flame-34" target="_blank" class="resume-btn">GitHub</a>
+</nav>
 
-<!-- Terminal -->
-<div class="terminal">
-  <div class="line prompt-line">
-    <span class="prompt"><span class="user">flame34</span><span class="at">@</span><span class="host">agent-dev</span> <span class="path">~/portfolio</span> <span class="dollar">$</span></span>
-    <span class="cmd">cat profile.json</span>
+<main>
+
+<!-- Hero -->
+<section class="hero" id="top">
+  <p class="intro">Hi, my name is</p>
+  <h1>flame34</h1>
+  <h2>I build AI agents.</h2>
+  <p class="desc">
+    AI Agent 方向开发工程师，专注 Agent 框架、LLM 编排与多模态内容生成 Pipeline。
+    从嵌入式转向 AI Agent，用系统思维构建可靠的智能体系统。
+  </p>
+  <div class="hero-cta">
+    <a href="#blog" class="btn-primary">查看博客</a>
   </div>
+</section>
 
-  <div class="profile">
-    <div class="profile-line"><span class="brace">{</span></div>
-    <div class="profile-line">  <span class="key">"role"</span>: <span class="val"><span class="str">"AI Agent Developer"</span></span>,</div>
-    <div class="profile-line">  <span class="key">"focus"</span>: [<span class="val"><span class="str">"Agent Framework"</span></span>, <span class="val"><span class="str">"LLM Orchestration"</span></span>, <span class="val"><span class="str">"Multi-Modal Pipeline"</span></span>]</div>
-    <div class="profile-line">  <span class="key">"stack"</span>: <span class="val"><span class="str">"Python · TypeScript · Go"</span></span>,</div>
-    <div class="profile-line">  <span class="key">"open_to_work"</span>: <span class="val"><span class="bool">true</span></span></div>
-    <div class="profile-line"><span class="brace">}</span></div>
+<!-- Skills -->
+<section id="skills">
+  <div class="section-header reveal">
+    <span class="section-num">01.</span>
+    <h2 class="section-title">技术栈</h2>
+    <div class="section-line"></div>
   </div>
-
-  <div class="line prompt-line">
-    <span class="prompt"><span class="user">flame34</span><span class="at">@</span><span class="host">agent-dev</span> <span class="path">~/portfolio</span> <span class="dollar">$</span></span>
-    <span class="cmd">ls skills/</span>
+  <div class="skills-grid">
+    <div class="skill-category reveal">
+      <h3>Agent 开发</h3>
+      <ul>
+        <li>Python · TypeScript</li>
+        <li>LangChain / LangGraph</li>
+        <li>MCP Protocol</li>
+        <li>ReAct / Plan-and-Execute</li>
+        <li>Multi-Agent Orchestration</li>
+      </ul>
+    </div>
+    <div class="skill-category reveal">
+      <h3>LLM 应用</h3>
+      <ul>
+        <li>RAG / Vector Database</li>
+        <li>Prompt Engineering</li>
+        <li>Function Calling / Tool Use</li>
+        <li>OpenAI API / GLM API</li>
+        <li>Embedding & Reranking</li>
+      </ul>
+    </div>
+    <div class="skill-category reveal">
+      <h3>工程化</h3>
+      <ul>
+        <li>FastAPI / Pydantic</li>
+        <li>Docker / CI/CD</li>
+        <li>Redis / PostgreSQL</li>
+        <li>Linux / Shell</li>
+        <li>Git / Monorepo</li>
+      </ul>
+    </div>
+    <div class="skill-category reveal">
+      <h3>系统底层</h3>
+      <ul>
+        <li>C / C++</li>
+        <li>Go</li>
+        <li>嵌入式 Linux BSP</li>
+        <li>FreeRTOS</li>
+        <li>Bluetooth Protocol Stack</li>
+      </ul>
+    </div>
   </div>
+</section>
 
-  <div class="skills-row">
-    <span class="skill">Python</span>
-    <span class="skill">TypeScript</span>
-    <span class="skill">Go</span>
-    <span class="skill">C/C++</span>
-    <span class="skill">LangChain</span>
-    <span class="skill">FastAPI</span>
-    <span class="skill">Pydantic</span>
-    <span class="skill">MCP Protocol</span>
-    <span class="skill">RAG / Vector DB</span>
-    <span class="skill">Docker</span>
-    <span class="skill">Linux</span>
-    <span class="skill">Git</span>
+<!-- Blog -->
+<section id="blog">
+  <div class="section-header reveal">
+    <span class="section-num">02.</span>
+    <h2 class="section-title">博客</h2>
+    <div class="section-line"></div>
   </div>
-
-  <div class="line prompt-line">
-    <span class="prompt"><span class="user">flame34</span><span class="at">@</span><span class="host">agent-dev</span> <span class="path">~/portfolio</span> <span class="dollar">$</span></span>
-    <span class="cmd">ls blog/</span>
-  </div>
-
-  <div class="blog-header"># Recent Posts</div>
-
-  <a href="/blog/agent-architecture.html" class="blog-item">
-    <span class="idx">01</span>
-    <span class="title">从零理解 AI Agent 架构</span>
-    <span class="time">8 min · Agent</span>
-  </a>
-  <a href="/blog/handwrite-react-agent.html" class="blog-item">
-    <span class="idx">02</span>
-    <span class="title">用 Python 手写 ReAct Agent（200 行）</span>
-    <span class="time">12 min · Python</span>
-  </a>
-  <a href="/blog/mcp-protocol.html" class="blog-item">
-    <span class="idx">03</span>
-    <span class="title">MCP 协议详解：Agent 的 USB 标准</span>
-    <span class="time">10 min · MCP</span>
-  </a>
-  <a href="/blog/embedded-to-agent.html" class="blog-item">
-    <span class="idx">04</span>
-    <span class="title">从嵌入式到 AI Agent</span>
-    <span class="time">6 min · Career</span>
-  </a>
-
-  <div class="line prompt-line" style="margin-top: 20px;">
-    <span class="prompt"><span class="user">flame34</span><span class="at">@</span><span class="host">agent-dev</span> <span class="path">~/portfolio</span> <span class="dollar">$</span></span>
-    <span class="cmd">cat contact.txt</span>
-  </div>
-
-  <div class="links-row">
-    <a href="https://github.com/flame-34" target="_blank" class="link-btn">
-      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
-      github.com/flame-34
+  <div class="blog-list">
+    <a href="/blog/agent-architecture.html" class="blog-card reveal">
+      <div class="info">
+        <h3>从零理解 AI Agent 架构</h3>
+        <p>五大核心组件解析 + Spring Boot 类比</p>
+      </div>
+      <div class="meta">8 min read<br>Agent · 架构</div>
+    </a>
+    <a href="/blog/handwrite-react-agent.html" class="blog-card reveal">
+      <div class="info">
+        <h3>用 Python 手写 ReAct Agent（200 行）</h3>
+        <p>不依赖框架，从零实现完整 ReAct 循环</p>
+      </div>
+      <div class="meta">12 min read<br>Python · ReAct</div>
+    </a>
+    <a href="/blog/mcp-protocol.html" class="blog-card reveal">
+      <div class="info">
+        <h3>MCP 协议详解：Agent 的 USB 标准</h3>
+        <p>JSON-RPC 消息格式 + 手写 MCP Server</p>
+      </div>
+      <div class="meta">10 min read<br>MCP · 协议</div>
+    </a>
+    <a href="/blog/embedded-to-agent.html" class="blog-card reveal">
+      <div class="info">
+        <h3>从嵌入式到 AI Agent</h3>
+        <p>转行路线、可迁移技能、面试核心考点</p>
+      </div>
+      <div class="meta">6 min read<br>Career · 转行</div>
     </a>
   </div>
+</section>
 
-  <div class="line prompt-line" style="margin-top: 20px;">
-    <span class="prompt"><span class="user">flame34</span><span class="at">@</span><span class="host">agent-dev</span> <span class="path">~/portfolio</span> <span class="dollar">$</span></span>
-    <span class="cursor"></span>
+<!-- Contact -->
+<section id="contact" class="contact-section">
+  <div class="reveal">
+    <p class="intro" style="font-family:var(--font-mono);font-size:15px;color:var(--green);margin-bottom:16px;">03. 联系我</p>
+    <h2>Get in Touch</h2>
+    <p>技术交流、项目合作、或者随便聊聊，都可以。</p>
+    <a href="https://github.com/flame-34" target="_blank" class="btn-primary">GitHub</a>
   </div>
-</div>
+</section>
 
-<!-- Status Bar -->
-<div class="statusbar">
-  <div class="left">
-    <span class="branch">⎇ main</span>
-    <span>UTF-8</span>
-    <span>LF</span>
-  </div>
-  <div class="right">
-    <span>Agent Developer</span>
-    <span>·</span>
-    <span>2026</span>
-  </div>
-</div>
+</main>
+
+<footer>
+  Designed & Built by flame34 · © 2026
+</footer>
+
+<script>
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 80);
+});
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.style.transitionDelay = (i % 4 * 0.08) + 's';
+  observer.observe(el);
+});
+</script>
 
 </body>
 </html>
