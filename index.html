@@ -1,271 +1,525 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
-  <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width">
-<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.2.0">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>张庆涵 — AI Agent Developer</title>
+<meta name="description" content="张庆涵，AI Agent 方向开发工程师，西安电子科技大学信息工程专业，关注 Agent 框架与多模态内容生成。">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
 
-  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
-  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+:root {
+  --bg: #0a0a0f;
+  --bg-card: #12121a;
+  --bg-hover: #1a1a25;
+  --border: #1e1e2e;
+  --text: #e4e4ef;
+  --text-dim: #6b6b80;
+  --text-mute: #45455a;
+  --accent: #7c5cfc;
+  --accent-glow: rgba(124, 92, 252, 0.15);
+  --accent2: #00d9a3;
+  --radius: 12px;
+}
 
-<link rel="stylesheet" href="/css/main.css">
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
+html { scroll-behavior: smooth; }
 
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', -apple-system, sans-serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha256-XOqroi11tY4EFQMR9ZYwZWKj5ZXiftSx36RRuC3anlA=" crossorigin="anonymous">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+/* ===== Nav ===== */
+nav {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  padding: 16px 5%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  backdrop-filter: blur(20px);
+  background: rgba(10, 10, 15, 0.7);
+  border-bottom: 1px solid transparent;
+  transition: border-color 0.3s;
+}
+nav.scrolled { border-bottom-color: var(--border); }
 
-<script class="next-config" data-name="main" type="application/json">{"hostname":"example.com","root":"/","images":"/images","scheme":"Mist","darkmode":false,"version":"8.20.0","exturl":false,"sidebar":{"position":"left","width_expanded":320,"width_dual_column":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":false,"style":null},"fold":{"enable":false,"height":500},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}}</script><script src="/js/config.js"></script>
+.logo {
+  font-weight: 600;
+  font-size: 16px;
+  letter-spacing: -0.02em;
+}
+.logo span { color: var(--accent); }
 
-    <meta property="og:type" content="website">
-<meta property="og:title" content="Hexo">
-<meta property="og:url" content="http://example.com/index.html">
-<meta property="og:site_name" content="Hexo">
-<meta property="og:locale" content="en_US">
-<meta property="article:author" content="John Doe">
-<meta name="twitter:card" content="summary">
+nav ul {
+  display: flex;
+  list-style: none;
+  gap: 32px;
+}
+nav a {
+  color: var(--text-dim);
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.2s;
+}
+nav a:hover { color: var(--text); }
 
+/* ===== Hero ===== */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 0 5%;
+  position: relative;
+}
 
-<link rel="canonical" href="http://example.com/">
+.hero::before {
+  content: '';
+  position: absolute;
+  top: 30%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, var(--accent-glow) 0%, transparent 70%);
+  pointer-events: none;
+}
 
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-bottom: 28px;
+  animation: fadeUp 0.8s ease;
+}
+.hero-badge .dot {
+  width: 6px;
+  height: 6px;
+  background: var(--accent2);
+  border-radius: 50%;
+  box-shadow: 0 0 8px var(--accent2);
+  animation: pulse 2s infinite;
+}
 
+.hero h1 {
+  font-size: clamp(2.5rem, 7vw, 5rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  margin-bottom: 16px;
+  animation: fadeUp 0.8s ease 0.1s both;
+}
+.hero h1 .grad {
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":true,"isPost":false,"lang":"en","comments":"","permalink":"","path":"index.html","title":""}</script>
+.hero p {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: var(--text-dim);
+  max-width: 540px;
+  margin-bottom: 36px;
+  animation: fadeUp 0.8s ease 0.2s both;
+}
 
-<script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Hexo</title>
-  
+.hero-links {
+  display: flex;
+  gap: 16px;
+  animation: fadeUp 0.8s ease 0.3s both;
+}
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 28px;
+  border-radius: var(--radius);
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s;
+  border: 1px solid transparent;
+}
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover {
+  background: #6b4df0;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px var(--accent-glow);
+}
+.btn-ghost {
+  background: transparent;
+  color: var(--text-dim);
+  border-color: var(--border);
+}
+.btn-ghost:hover {
+  color: var(--text);
+  border-color: var(--text-mute);
+  background: var(--bg-card);
+}
 
+/* ===== Sections ===== */
+section {
+  padding: 100px 5%;
+  max-width: 900px;
+  margin: 0 auto;
+}
 
+.section-label {
+  font-size: 13px;
+  color: var(--accent);
+  font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 12px;
+}
+.section-title {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  margin-bottom: 48px;
+}
 
+/* ===== About ===== */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.about-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  transition: all 0.2s;
+}
+.about-card:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-mute);
+}
+.about-card .icon {
+  font-size: 20px;
+  margin-bottom: 12px;
+}
+.about-card h3 {
+  font-size: 15px;
+  font-weight: 500;
+  margin-bottom: 6px;
+}
+.about-card p {
+  font-size: 14px;
+  color: var(--text-dim);
+}
 
+/* ===== Skills ===== */
+.skills-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.skill-tag {
+  padding: 8px 16px;
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-size: 14px;
+  color: var(--text-dim);
+  transition: all 0.2s;
+  cursor: default;
+}
+.skill-tag:hover {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: var(--accent-glow);
+}
 
+/* ===== Projects ===== */
+.project {
+  background: var(--bg-card);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px;
+  margin-bottom: 16px;
+  transition: all 0.2s;
+}
+.project:hover {
+  background: var(--bg-hover);
+  border-color: var(--text-mute);
+  transform: translateY(-2px);
+}
+.project-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  margin-bottom: 8px;
+}
+.project h3 {
+  font-size: 17px;
+  font-weight: 600;
+}
+.project .arrow {
+  color: var(--text-mute);
+  transition: all 0.2s;
+}
+.project:hover .arrow {
+  color: var(--accent);
+  transform: translate(3px, -3px);
+}
+.project .stack {
+  display: flex;
+  gap: 6px;
+  margin: 12px 0;
+}
+.project .stack span {
+  font-size: 12px;
+  font-family: 'JetBrains Mono', monospace;
+  color: var(--text-mute);
+  padding: 3px 8px;
+  background: var(--bg);
+  border-radius: 4px;
+}
+.project p {
+  font-size: 14px;
+  color: var(--text-dim);
+}
 
+/* ===== Contact ===== */
+.contact {
+  text-align: center;
+  padding: 120px 5%;
+}
+.contact h2 {
+  font-size: clamp(1.5rem, 4vw, 2.25rem);
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+.contact p {
+  color: var(--text-dim);
+  margin-bottom: 32px;
+}
+.contact-links {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
 
+/* ===== Footer ===== */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 32px 5%;
+  text-align: center;
+  color: var(--text-mute);
+  font-size: 13px;
+}
 
-  <noscript>
-    <link rel="stylesheet" href="/css/noscript.css">
-  </noscript>
+/* ===== Animations ===== */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 640px) {
+  nav ul { display: none; }
+  .about-grid { grid-template-columns: 1fr; }
+  .hero-links { flex-direction: column; align-items: center; }
+}
+</style>
 </head>
+<body>
 
-<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
-  <div class="headband"></div>
+<nav id="nav">
+  <div class="logo">张庆涵<span>.</span></div>
+  <ul>
+    <li><a href="#about">关于</a></li>
+    <li><a href="#skills">技能</a></li>
+    <li><a href="#projects">项目</a></li>
+    <li><a href="#contact">联系</a></li>
+  </ul>
+</nav>
 
-  <main class="main">
-    <div class="column">
-      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
-  <div class="site-nav-toggle">
-    <div class="toggle" aria-label="Toggle navigation bar" role="button">
-    </div>
+<!-- Hero -->
+<section class="hero">
+  <div class="hero-badge">
+    <div class="dot"></div>
+    正在寻找 AI Agent 开发岗位
   </div>
-
-  <div class="site-meta">
-
-    <a href="/" class="brand" rel="start">
-      <i class="logo-line"></i>
-      <h1 class="site-title">Hexo</h1>
-      <i class="logo-line"></i>
+  <h1>张<span class="grad">庆涵</span></h1>
+  <p>AI Agent 方向开发工程师 · 西安电子科技大学 · 专注 Agent 框架、多模态内容生成与 LLM 应用落地</p>
+  <div class="hero-links">
+    <a href="#projects" class="btn btn-primary">查看项目 →</a>
+    <a href="https://github.com/flame-34" target="_blank" class="btn btn-ghost">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0 0 24 12c0-6.63-5.37-12-12-12z"/></svg>
+      GitHub
     </a>
   </div>
+</section>
 
-  <div class="site-nav-right">
-    <div class="toggle popup-trigger" aria-label="Search" role="button">
+<!-- About -->
+<section id="about">
+  <div class="section-label reveal">// 关于我</div>
+  <h2 class="section-title reveal">背景</h2>
+  <div class="about-grid">
+    <div class="about-card reveal">
+      <div class="icon">🎓</div>
+      <h3>西安电子科技大学</h3>
+      <p>信息工程 · GPA 3.5/4.0 · 英语六级</p>
+    </div>
+    <div class="about-card reveal">
+      <div class="icon">🔧</div>
+      <h3>工作经历</h3>
+      <p>普联技术（嵌入式 BSP）→ 杰理科技（蓝牙/AI 对话）→ AI Agent 方向</p>
+    </div>
+    <div class="about-card reveal">
+      <div class="icon">🤖</div>
+      <h3>当前方向</h3>
+      <p>AI Agent 框架开发、LLM 编排、多模态内容生成 Pipeline</p>
+    </div>
+    <div class="about-card reveal">
+      <div class="icon">💡</div>
+      <h3>正在做的事</h3>
+      <p>AI 视频生成 Agent · 个人技术博客 · 开源贡献</p>
     </div>
   </div>
-</div>
+</section>
 
+<!-- Skills -->
+<section id="skills">
+  <div class="section-label reveal">// 技术栈</div>
+  <h2 class="section-title reveal">技能</h2>
+  <div class="skills-wrap reveal">
+    <div class="skill-tag">Python</div>
+    <div class="skill-tag">TypeScript</div>
+    <div class="skill-tag">Go</div>
+    <div class="skill-tag">C/C++</div>
+    <div class="skill-tag">LangChain / LlamaIndex</div>
+    <div class="skill-tag">FastAPI</div>
+    <div class="skill-tag">Pydantic</div>
+    <div class="skill-tag">OpenAI API / GLM API</div>
+    <div class="skill-tag">MCP Protocol</div>
+    <div class="skill-tag">RAG / Vector DB</div>
+    <div class="skill-tag">Docker</div>
+    <div class="skill-tag">Linux / Shell</div>
+    <div class="skill-tag">Git</div>
+    <div class="skill-tag">嵌入式 Linux BSP</div>
+    <div class="skill-tag">FreeRTOS</div>
+  </div>
+</section>
 
+<!-- Projects -->
+<section id="projects">
+  <div class="section-label reveal">// 精选项目</div>
+  <h2 class="section-title reveal">Projects</h2>
 
-
-
-
-
-</header>
-        
-  
-  <aside class="sidebar">
-
-    <div class="sidebar-inner sidebar-overview-active">
-      <ul class="sidebar-nav">
-        <li class="sidebar-nav-toc">
-          Table of Contents
-        </li>
-        <li class="sidebar-nav-overview">
-          Overview
-        </li>
-      </ul>
-
-      <div class="sidebar-panel-container">
-        <!--noindex-->
-        <div class="post-toc-wrap sidebar-panel">
-        </div>
-        <!--/noindex-->
-
-        <div class="site-overview-wrap sidebar-panel">
-          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
-  <p class="site-author-name" itemprop="name">John Doe</p>
-  <div class="site-description" itemprop="description"></div>
-</div>
-<div class="site-state-wrap animated">
-  <nav class="site-state">
-      <div class="site-state-item site-state-posts">
-        <a href="/archives/">
-          <span class="site-state-item-count">1</span>
-          <span class="site-state-item-name">posts</span>
-        </a>
+  <a href="https://github.com/flame-34" target="_blank" class="reveal" style="text-decoration:none;color:inherit;display:block;">
+    <div class="project">
+      <div class="project-header">
+        <h3>AgentForge — 多 Agent 编排框架</h3>
+        <span class="arrow">↗</span>
       </div>
-  </nav>
-</div>
-
-        </div>
+      <div class="stack">
+        <span>Python</span><span>FastAPI</span><span>Pydantic</span><span>Redis</span>
       </div>
+      <p>开源多 Agent 编排框架，支持 ReAct 循环、工具注册、技能系统和多模型路由。设计参考了 LangGraph 和字节跳动内部 Agentic AI 框架，提供声明式 Agent 定义和可视化执行追踪。</p>
     </div>
+  </a>
 
-    
-  </aside>
-
-
+  <a href="https://github.com/flame-34" target="_blank" class="reveal" style="text-decoration:none;color:inherit;display:block;">
+    <div class="project">
+      <div class="project-header">
+        <h3>CodeReviewer — RAG 代码审查系统</h3>
+        <span class="arrow">↗</span>
+      </div>
+      <div class="stack">
+        <span>TypeScript</span><span>Node.js</span><span>Pinecone</span><span>GitHub API</span>
+      </div>
+      <p>基于 RAG 的自动化代码审查工具，结合代码库历史和团队编码规范，自动分析 PR 中的潜在问题。支持增量索引、语义检索和自定义审查规则。</p>
     </div>
+  </a>
 
-    <div class="main-inner index posts-expand">
-
-    
-
-
-<div class="post-block">
-  
-  
-
-  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
-    <link itemprop="mainEntityOfPage" href="http://example.com/2024/05/14/hello-world/">
-
-    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
-      <meta itemprop="image" content="/images/avatar.gif">
-      <meta itemprop="name" content="John Doe">
-    </span>
-
-    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
-      <meta itemprop="name" content="Hexo">
-      <meta itemprop="description" content="">
-    </span>
-
-    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
-      <meta itemprop="name" content="undefined | Hexo">
-      <meta itemprop="description" content="">
-    </span>
-      <header class="post-header">
-        <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/05/14/hello-world/" class="post-title-link" itemprop="url">Hello World</a>
-        </h2>
-
-        <div class="post-meta-container">
-          <div class="post-meta">
-    <span class="post-meta-item">
-      <span class="post-meta-item-icon">
-        <i class="far fa-calendar"></i>
-      </span>
-      <span class="post-meta-item-text">Posted on</span>
-
-      <time title="Created: 2024-05-14 23:44:17" itemprop="dateCreated datePublished" datetime="2024-05-14T23:44:17+08:00">2024-05-14</time>
-    </span>
-
-  
-</div>
-
-        </div>
-      </header>
-
-    
-    
-    
-    <div class="post-body" itemprop="articleBody">
-          <p>Welcome to <a target="_blank" rel="noopener" href="https://hexo.io/">Hexo</a>! This is your very first post. Check <a target="_blank" rel="noopener" href="https://hexo.io/docs/">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a target="_blank" rel="noopener" href="https://hexo.io/docs/troubleshooting.html">troubleshooting</a> or you can ask me on <a target="_blank" rel="noopener" href="https://github.com/hexojs/hexo/issues">GitHub</a>.</p>
-<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">&quot;My New Post&quot;</span></span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/writing.html">Writing</a></p>
-<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/server.html">Server</a></p>
-<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/generating.html">Generating</a></p>
-<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
-
-<p>More info: <a target="_blank" rel="noopener" href="https://hexo.io/docs/one-command-deployment.html">Deployment</a></p>
-
-      
+  <a href="https://github.com/flame-34" target="_blank" class="reveal" style="text-decoration:none;color:inherit;display:block;">
+    <div class="project">
+      <div class="project-header">
+        <h3>Multi-Modal Content Pipeline</h3>
+        <span class="arrow">↗</span>
+      </div>
+      <div class="stack">
+        <span>Python</span><span>Pillow</span><span>edge-tts</span><span>ffmpeg</span>
+      </div>
+      <p>端到端多模态内容生成 Pipeline：LLM 生成剧本 → AI 分镜 → 素材检索 → 程序化渲染 → TTS 配音 → 音视频合成。支持补间动画、镜头系统和程序化音效。</p>
     </div>
+  </a>
+</section>
 
-    
-    
-    
-
-    <footer class="post-footer">
-        <div class="post-eof"></div>
-      
-    </footer>
-  </article>
-</div>
-
-
-
-
-
-</div>
-  </main>
-
-  <footer class="footer">
-    <div class="footer-inner">
-
-  <div class="copyright">
-    &copy; 
-    <span itemprop="copyrightYear">2024</span>
-    <span class="with-love">
-      <i class="fa fa-heart"></i>
-    </span>
-    <span class="author" itemprop="copyrightHolder">John Doe</span>
-  </div>
-  <div class="powered-by">Powered by <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/mist/" rel="noopener" target="_blank">NexT.Mist</a>
-  </div>
-
+<!-- Contact -->
+<section id="contact" class="contact">
+  <div class="reveal">
+    <div class="section-label">// 联系方式</div>
+    <h2>一起做点有意思的？</h2>
+    <p>Agent 方向机会、技术交流、或者随便聊聊都行</p>
+    <div class="contact-links">
+      <a href="mailto:1830116886@qq.com" class="btn btn-primary">📧 邮箱</a>
+      <a href="https://github.com/flame-34" target="_blank" class="btn btn-ghost">GitHub</a>
+      <a href="tel:13134987544" class="btn btn-ghost">📱 电话</a>
     </div>
-  </footer>
-
-  
-  <div class="toggle sidebar-toggle" role="button">
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
-    <span class="toggle-line"></span>
   </div>
-  <div class="sidebar-dimmer"></div>
-  <div class="back-to-top" role="button" aria-label="Back to top">
-    <i class="fa fa-arrow-up fa-lg"></i>
-    <span>0%</span>
-  </div>
+</section>
 
-<noscript>
-  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
-</noscript>
+<footer>
+  © 2026 张庆涵 · Built with ❤️ and pure HTML/CSS
+</footer>
 
+<script>
+// Nav scroll effect
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => {
+  nav.classList.toggle('scrolled', window.scrollY > 20);
+});
 
-  
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
-<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/schemes/muse.js"></script><script src="/js/sidebar.js"></script><script src="/js/next-boot.js"></script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
 
-  
-
-
-
-
-
-
-  
-
-
-
-
+document.querySelectorAll('.reveal').forEach((el, i) => {
+  el.style.transitionDelay = (i % 4 * 0.08) + 's';
+  observer.observe(el);
+});
+</script>
 
 </body>
 </html>
