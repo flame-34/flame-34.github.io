@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="zh-CN" class="scroll-smooth">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>flame34</title>
-<meta name="description" content="AI Agent Developer focused on Agent frameworks, LLM orchestration, and multi-modal content pipelines.">
+<meta name="description" content="AI Agent 开发者，专注于 Agent 框架、LLM 编排与多模态内容生成管线。">
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+SC:wght@400;500;600;700&display=swap');
 
 :root {
   --slate-900: #0f172a;
@@ -26,7 +26,7 @@
 body {
   background: var(--slate-900);
   color: var(--slate-400);
-  font-family: 'Inter', -apple-system, sans-serif;
+  font-family: 'Noto Sans SC', 'Inter', -apple-system, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
@@ -140,8 +140,7 @@ a { color: inherit; }
 .sidenav .label {
   font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   color: var(--slate-500);
   transition: color 0.2s;
 }
@@ -180,8 +179,7 @@ a { color: inherit; }
 .section-title {
   font-size: 14px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   color: var(--slate-200);
   margin-bottom: 16px;
   position: sticky;
@@ -264,8 +262,7 @@ a { color: inherit; }
 .exp-date {
   font-size: 12px;
   font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.03em;
   color: var(--slate-500);
   position: relative;
   z-index: 1;
@@ -408,8 +405,7 @@ footer a:hover { color: var(--teal-300); }
 .mobile-nav a {
   font-size: 12px;
   font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.05em;
   color: var(--slate-500);
   text-decoration: none;
 }
@@ -426,27 +422,27 @@ footer a:hover { color: var(--teal-300); }
     <header class="sidebar">
       <div>
         <h1><a href="/">flame34</a></h1>
-        <p class="role">AI Agent Developer</p>
-        <p class="tagline">Building agent systems and multi-modal content pipelines. Transitioned from embedded systems engineering in 2026.</p>
+        <p class="role">AI Agent 开发者</p>
+        <p class="tagline">专注于 Agent 系统构建与多模态内容生成管线。2026 年从嵌入式工程转向 Agent 方向。</p>
 
-        <nav class="sidenav" aria-label="In-page jump links">
+        <nav class="sidenav" aria-label="页面内导航">
           <ul>
-            <li><a href="#about"><span class="indicator"></span><span class="label">About</span></a></li>
-            <li><a href="#experience"><span class="indicator"></span><span class="label">Experience</span></a></li>
-            <li><a href="#projects"><span class="indicator"></span><span class="label">Projects</span></a></li>
-            <li><a href="#writing"><span class="indicator"></span><span class="label">Writing</span></a></li>
+            <li><a href="#about"><span class="indicator"></span><span class="label">关于</span></a></li>
+            <li><a href="#experience"><span class="indicator"></span><span class="label">工作经历</span></a></li>
+            <li><a href="#projects"><span class="indicator"></span><span class="label">项目</span></a></li>
+            <li><a href="#writing"><span class="indicator"></span><span class="label">文章</span></a></li>
           </ul>
         </nav>
 
         <div class="mobile-nav">
-          <a href="#about">About</a>
-          <a href="#experience">Experience</a>
-          <a href="#projects">Projects</a>
-          <a href="#writing">Writing</a>
+          <a href="#about">关于</a>
+          <a href="#experience">工作经历</a>
+          <a href="#projects">项目</a>
+          <a href="#writing">文章</a>
         </div>
       </div>
 
-      <ul class="social-row" aria-label="Social media">
+      <ul class="social-row" aria-label="社交媒体">
         <li>
           <a href="https://github.com/flame-34" target="_blank" rel="noreferrer" aria-label="GitHub">
             <svg viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
@@ -460,31 +456,31 @@ footer a:hover { color: var(--teal-300); }
 
       <!-- About -->
       <section id="about" class="section about">
-        <h2 class="section-title">About</h2>
+        <h2 class="section-title">关于</h2>
         <p>
-          I'm a developer focused on building <strong style="color:var(--slate-200)">agent systems and multi-modal content pipelines</strong> — from ReAct loops and tool orchestration to video generation pipelines. Started the Agent journey in early 2026, transitioning from embedded systems engineering.
+          我是一名专注于<strong style="color:var(--slate-200)"> Agent 系统与多模态内容生成管线</strong>的开发者——从 ReAct 循环、工具编排到视频生成管线。2026 年初从嵌入式工程转向 Agent 方向。
         </p>
         <p>
-          Currently transitioning from embedded systems engineering to AI Agent development, bringing years of experience in <strong style="color:var(--slate-200)">protocol stacks, system-level thinking, and resource-constrained optimization</strong> to the LLM era. I work with Python, TypeScript, and Go to build agents that use MCP protocol, RAG systems, and multi-model routing.
+          目前正在从嵌入式系统工程转向 AI Agent 开发，将多年积累的<strong style="color:var(--slate-200)">协议栈开发、系统级思维和资源受限环境优化</strong>经验带入 LLM 时代。主要使用 Python、TypeScript 和 Go 构建 Agent 系统，涉及 MCP 协议、RAG 系统和多模型路由。
         </p>
         <p>
-          Previously, I worked on embedded systems at <span style="color:var(--slate-200)">TP-Link</span> (switch BSP, Ethernet RPC frameworks) and <span style="color:var(--slate-200)">Jieli Technology</span> (Bluetooth protocol stack, AI dialogue systems, embedded UI). These experiences shaped my approach to building systems that are both robust and efficient — qualities I now apply to Agent development.
+          此前，我在<span style="color:var(--slate-200)">普联技术</span>（交换机 BSP、以太网 RPC 框架）和<span style="color:var(--slate-200)">杰理科技</span>（蓝牙协议栈、AI 对话系统、嵌入式 UI）从事嵌入式开发。这些经历塑造了我对系统健壮性和极致效率的追求——这些品质如今正应用于 Agent 开发中。
         </p>
         <p>
-          Outside of coding, you can find me exploring the latest LLM research papers and building side projects with open-source AI tools.
+          工作之余，我会追踪最新的 LLM 研究论文，用开源 AI 工具做一些副业项目。
         </p>
       </section>
 
       <!-- Experience -->
       <section id="experience" class="section">
-        <h2 class="section-title">Experience</h2>
+        <h2 class="section-title">工作经历</h2>
         <ol class="exp-list">
 
           <li class="exp-item">
-            <div class="exp-date">2026 — Present</div>
+            <div class="exp-date">2026 — 至今</div>
             <div class="exp-content">
-              <h3>AI Agent Developer <span style="color:var(--slate-500)">· Independent</span></h3>
-              <p>Building AI agent systems including ReAct-based orchestration frameworks, multi-modal content generation pipelines (LLM → storyboard → render → TTS → video), and MCP-compatible tool servers. Deep dive into LangChain, LangGraph, and the MCP protocol ecosystem.</p>
+              <h3>AI Agent 开发者 <span style="color:var(--slate-500)">· 独立开发</span></h3>
+              <p>构建 AI Agent 系统，包括基于 ReAct 的编排框架、多模态内容生成管线（LLM → 分镜 → 渲染 → TTS → 视频），以及兼容 MCP 协议的工具服务器。深入研究 LangChain、LangGraph 及 MCP 协议生态。</p>
               <ul class="tech-tags">
                 <li><span class="tech-tag">Python</span></li>
                 <li><span class="tech-tag">TypeScript</span></li>
@@ -496,14 +492,14 @@ footer a:hover { color: var(--teal-300); }
           </li>
 
           <li class="exp-item">
-            <div class="exp-date">2024 — Present</div>
+            <div class="exp-date">2024 — 至今</div>
             <div class="exp-content">
-              <h3>Embedded Software Engineer · Jieli Technology</h3>
-              <p>Developed Bluetooth protocol stack components, AI dialogue systems for embedded devices, and UI frameworks for smart wearables (electronic badges, smartwatches, color-screen devices). Worked on edge AI integration bringing LLM-powered dialogue to resource-constrained hardware.</p>
+              <h3>嵌入式软件工程师 · 杰理科技</h3>
+              <p>负责蓝牙协议栈组件开发、嵌入式设备 AI 对话系统，以及智能穿戴设备 UI 框架（电子吧唧、智能手表、彩屏仓）。参与边缘 AI 集成，在资源受限硬件上实现 LLM 驱动的对话能力。</p>
               <ul class="tech-tags">
                 <li><span class="tech-tag">C</span></li>
                 <li><span class="tech-tag">C++</span></li>
-                <li><span class="tech-tag">Bluetooth</span></li>
+                <li><span class="tech-tag">蓝牙</span></li>
                 <li><span class="tech-tag">RTOS</span></li>
                 <li><span class="tech-tag">Embedded Linux</span></li>
               </ul>
@@ -513,12 +509,12 @@ footer a:hover { color: var(--teal-300); }
           <li class="exp-item">
             <div class="exp-date">2022 — 2024</div>
             <div class="exp-content">
-              <h3>Embedded Software Engineer · TP-Link Technologies</h3>
-              <p>Developed Board Support Packages for enterprise switches, built Ethernet RPC frameworks, and implemented serial/CAN transparent transmission for industrial-grade switches. Focused on network protocol implementation and hardware abstraction layers.</p>
+              <h3>嵌入式软件工程师 · 普联技术</h3>
+              <p>负责企业级交换机 BSP 开发，构建以太网 RPC 框架，实现工业级交换机的串口/CAN 透传。专注于网络协议实现和硬件抽象层。</p>
               <ul class="tech-tags">
                 <li><span class="tech-tag">C</span></li>
                 <li><span class="tech-tag">Linux BSP</span></li>
-                <li><span class="tech-tag">Ethernet</span></li>
+                <li><span class="tech-tag">以太网</span></li>
                 <li><span class="tech-tag">CAN</span></li>
                 <li><span class="tech-tag">Shell</span></li>
               </ul>
@@ -530,13 +526,13 @@ footer a:hover { color: var(--teal-300); }
 
       <!-- Projects -->
       <section id="projects" class="section">
-        <h2 class="section-title">Projects</h2>
+        <h2 class="section-title">项目</h2>
         <ul class="proj-list">
 
           <li class="proj-item">
             <div class="proj-content">
-              <h3><a href="/blog/mcp-protocol.html">Multi-Modal Content Pipeline <svg class="ext-arrow" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"></path></svg></a></h3>
-              <p>End-to-end multi-modal content generation pipeline: LLM generates screenplay → AI storyboard breakdown → asset retrieval → programmatic rendering → TTS voiceover → audio/video synthesis. Supports tween animations, camera systems, and procedural sound effects.</p>
+              <h3><a href="/blog/mcp-protocol.html">多模态内容生成管线 <svg class="ext-arrow" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"></path></svg></a></h3>
+              <p>端到端多模态内容生成管线：LLM 生成剧本 → AI 分镜拆解 → 素材检索 → 程序化渲染 → TTS 配音 → 音视频合成。支持补间动画、镜头系统和程序化音效。</p>
               <ul class="tech-tags">
                 <li><span class="tech-tag">Python</span></li>
                 <li><span class="tech-tag">Pillow</span></li>
@@ -551,7 +547,7 @@ footer a:hover { color: var(--teal-300); }
 
       <!-- Writing -->
       <section id="writing" class="section">
-        <h2 class="section-title">Writing</h2>
+        <h2 class="section-title">文章</h2>
         <ul class="proj-list">
 
           <li class="proj-item">
@@ -586,7 +582,7 @@ footer a:hover { color: var(--teal-300); }
       </section>
 
       <footer>
-        <p>Built with pure HTML &amp; CSS, deployed on <a href="https://pages.github.com/" target="_blank" rel="noreferrer">GitHub Pages</a>. All text is set in the <a href="https://rsms.me/inter/" target="_blank" rel="noreferrer">Inter</a> typeface.</p>
+        <p>使用纯 HTML &amp; CSS 构建，部署于 <a href="https://pages.github.com/" target="_blank" rel="noreferrer">GitHub Pages</a>。字体为 <a href="https://fonts.google.com/noto/specimen/Noto+Sans+SC" target="_blank" rel="noreferrer">Noto Sans SC</a>。</p>
       </footer>
 
     </main>
