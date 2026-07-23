@@ -510,7 +510,22 @@ footer a:hover { color: var(--teal-300); }
 
           <li class="proj-item">
             <div class="proj-content">
-              <h3><a href="/blog/mcp-protocol.html">多模态内容生成管线 <svg class="ext-arrow" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.22 14.78a.75.75 0 001.06 0l7.22-7.22v5.69a.75.75 0 001.5 0v-7.5a.75.75 0 00-.75-.75h-7.5a.75.75 0 000 1.5h5.69l-7.22 7.22a.75.75 0 000 1.06z" clip-rule="evenodd"></path></svg></a></h3>
+              <h3>DocRAG — 技术文档 RAG 问答系统</h3>
+              <p>混合检索 + Self-RAG 修正循环 + Source Tracing 的智能文档问答系统。支持多格式文档解析（PDF/Word/Markdown/HTML），语义分块，BM25 + 向量双路召回经 RRF 融合后 Reranker 精排。首轮置信度不足时自动改写 query 二次检索，最多 3 轮。每条回答标注来源文档与页码。</p>
+              <ul class="tech-tags">
+                <li><span class="tech-tag">Python</span></li>
+                <li><span class="tech-tag">FastAPI</span></li>
+                <li><span class="tech-tag">ChromaDB</span></li>
+                <li><span class="tech-tag">BM25</span></li>
+                <li><span class="tech-tag">Reranker</span></li>
+                <li><span class="tech-tag">Redis</span></li>
+              </ul>
+            </div>
+          </li>
+
+          <li class="proj-item">
+            <div class="proj-content">
+              <h3>多模态内容生成管线</h3>
               <p>端到端多模态内容生成管线：LLM 生成剧本 → AI 分镜拆解 → 素材检索 → 程序化渲染 → TTS 配音 → 音视频合成。支持补间动画、镜头系统和程序化音效。</p>
               <ul class="tech-tags">
                 <li><span class="tech-tag">Python</span></li>
